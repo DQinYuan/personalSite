@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.du.personalSite</groupId>
+  <artifactId>personalSite</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.guava>19.0-rc2</version.guava>
+    <version.slf4j-api>1.7.12</version.slf4j-api>
+    <version.junit>4.12</version.junit>
+    <version.log4j>2.4.1</version.log4j>
+    <version.spring>4.3.6.RELEASE</version.spring>
+    <version.hibernate>5.2.7.Final-atlassian-1</version.hibernate>
+    <version.hikari>2.4.1</version.hikari>
+    <version.log4j2>2.4.1</version.log4j2>
+    <version.cache>2.9.0</version.cache>
+    <version.junit>4.12</version.junit>
+  </properties>
+  <modules>
+    <module>personalSite-web</module>
+    <module>personalSite-utils</module>
+    <module>personalSite-domain</module>
+    <module>personalSite-service</module>
+    <module>personalSite-dao</module>
+  </modules>
+</project>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-3.1.xsd  ">
+    <!-- 包扫描 -->
+    <context:component-scan base-package="org.du.personalSite.dao"/>
+
+    <!-- 数据库连接池 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg>
+            <bean class="com.zaxxer.hikari.HikariConfig">
+                <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+                <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/personalSite?characterEncoding=utf-8"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root"/>
+                <property name="connectionTestQuery" value="select 1 from dual"/>
+                <property name="connectionTimeout" value="15000"/>
+                <property name="idleTimeout" value="600000"/>
+                <property name="maxLifetime" value="1800000"/>
+                <property name="maximumPoolSize" value="10"/>
+                <property name="minimumIdle" value="1"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- 配置SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+          p:dataSource-ref="dataSource">
+        <!-- annotatedClasses用于列出全部持久化类 -->
+        <property name="annotatedClasses">
+            <list>
+                <value>org.du.personalSite.domain.User</value>
+                <value>org.du.personalSite.domain.Article</value>
+            </list>
+        </property>
+        <!-- 定义hibernate的SessionFactory属性 -->
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+                hibernate.hbm2ddl.auto=update
+                hibernate.show_sql=true
+                hibernate.format_sql=true
+            </value>
+        </property>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!--启动注解用注解来管理事务-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
