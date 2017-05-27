@@ -23,11 +23,12 @@ public class Article implements Serializable{
     @Column(nullable = false, unique = true)
     private String title;
 
-    @Column
+    @Lob
+    @Column(length = 16777215)
     private String artAbstract;    //摘要
 
     @Column
-    private String category;
+    private Integer category;
 
     @Lob
     @Column(length = 16777215, name = "original_content")
@@ -55,7 +56,7 @@ public class Article implements Serializable{
     @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
-    public java.lang.Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -71,11 +72,11 @@ public class Article implements Serializable{
         this.title = title;
     }
 
-    public String getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Integer category) {
         this.category = category;
     }
 
@@ -142,4 +143,5 @@ public class Article implements Serializable{
     public void setArtAbstract(String artAbstract) {
         this.artAbstract = artAbstract;
     }
+
 }

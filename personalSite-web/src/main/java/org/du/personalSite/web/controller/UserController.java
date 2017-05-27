@@ -7,6 +7,7 @@ import org.du.personalSite.domain.vo.LoginInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.UserService;
 import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.web.utils.AjaxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,6 @@ public class UserController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public void userLogin(UserInfo user, String vcode, HttpSession session, HttpServletRequest request, HttpServletResponse response, Boolean iniPage) throws Exception{
         //返回json数据
-        response.setContentType("application/json;charset=UTF-8");
         LoginInfo loginInfo = new LoginInfo();
 
         Boolean islogined = (Boolean) session.getAttribute("islogined");
@@ -47,7 +47,7 @@ public class UserController {
             String nickname = (String) session.getAttribute("nickname");
             loginInfo.setNickname(nickname);
             loginInfo.setIslogined(islogined);
-            response.getWriter().write(JSON.toJSONString(loginInfo));
+            AjaxUtils.reponseAjax(response, loginInfo);
             return;
         }
         if ( iniPage != null && iniPage == true ){
@@ -59,7 +59,7 @@ public class UserController {
             session.setAttribute("islogined", false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("验证码错误");
-            response.getWriter().write(JSON.toJSONString(loginInfo));
+            AjaxUtils.reponseAjax(response, loginInfo);
             logger.info("ip地址" + request.getRemoteAddr() + "验证码错误");
             return;
         }
@@ -69,7 +69,7 @@ public class UserController {
             session.setAttribute("islogined", false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("用户名或者密码不能为空");
-            response.getWriter().write(JSON.toJSONString(loginInfo));
+            AjaxUtils.reponseAjax(response, loginInfo);
             logger.info("ip地址" + request.getRemoteAddr() + "用户名或者密码为空");
             return;
         }
@@ -99,6 +99,6 @@ public class UserController {
             session.setAttribute("user", outUser);
             logger.info("用户" + user.getNickname() + "登录成功");
         }
-        response.getWriter().write(JSON.toJSONString(loginInfo));
+        AjaxUtils.reponseAjax(response, loginInfo);
     }
 }

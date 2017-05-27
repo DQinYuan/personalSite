@@ -37,4 +37,8 @@ public class ArticleDaoHibernate5 extends BaseDaoHibernate5<Article> implements 
         if ( artList.size() == 0 ) return null;
         return artList.get(0);
     }
+
+    public List<Article> getByCate(Integer cateId) throws Exception {
+        return find("select a from Article a where a.category = ?0", cateId);
+    }
 }

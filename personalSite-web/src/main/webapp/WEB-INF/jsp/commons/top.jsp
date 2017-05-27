@@ -24,22 +24,21 @@
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页</a></li>
+                <li class="active"><a class="cate-a" cateId="-1">首页</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
                         聊聊技术
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">全部</a></li>
-                        <li><a href="#">杂谈</a></li>
-                        <li><a href="#">笔记</a></li>
-                        <li><a href="#">教程</a></li>
+                        <li><a class="cate-a" cateId="-1">全部</a></li>
+                        <li><a class="cate-a" cateId="0">杂谈</a></li>
+                        <li><a class="cate-a" cateId="1">笔记</a></li>
+                        <li><a class="cate-a" cateId="2">教程</a></li>
                     </ul>
                 </li>
-                <li><a href="#">聊聊生活</a></li>
+                <li><a class="cate-a" cateId="3" type="button">聊聊生活</a></li>
                 <li><a href="#"><span class="glyphicon glyphicon-pencil"/>留言</a></li>
-                <li><a href="#">个人知识库</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="signup-in">
                 <li id="signup-nav"><a role="button" data-toggle="modal" data-target="#sign-up"><span
@@ -243,15 +242,36 @@
             } else {
                 submitLogin();
             }
-        })
+        });
 
         $("#loginimg").click(function () {
             var timestamp = new Date().getTime();
             $(this).attr("src", $(this).attr('src') + '?' +timestamp);
-        })
+        });
     })
 
+    function getArticles(cateId) {
+        $.get(
+            "/articles/getArticles.action",
+            {
+                cateId:cateId
+            },
+            function (articles) {
+                $(".thumb-panel").remove();
+                for (var i = 0; i < articles.length; i++ ){
+                    $("body").append($(" <div class='panel panel-default thumb-panel'><div class='panel-heading'>"
+                        + "<h3 class='panel-title'> <a href='#'>" + articles[i].title
+                        + "</a> </h3> </div> <div class='panel-body'>" + articles[i].artAbstract
+                        + "</div> </div>"));
+                }
 
+            }
+        )
+    }
+
+    $(".cate-a").click(function () {
+        getArticles($(this).attr("cateId"));
+    });
 </script>
 <%-- Common Content Enf --%>
 

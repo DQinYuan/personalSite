@@ -15,16 +15,31 @@
 <body>
     <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
     <form role="form" class=" col-lg-8 col-lg-offset-2">
+        <div class="form-group pull-left" style="width: 30%">
+            <label for="abstract">文章分类：</label>
+            <select id="category" class="selectpicker show-tick form-control" data-live-search="false">
+                <option value="0">杂谈</option>
+                <option value="1">笔记</option>
+                <option value="2">教程</option>
+                <option value="3">聊聊生活</option>
+            </select>
+        </div>
         <div class="form-group">
-            <label for="title">标题：</label>
             <div>
-                <input type="text" class="form-control" id="title" placeholder="文章Title"/>
+                <input type="text" class="form-control" id="title" placeholder="文章标题"/>
             </div>
         </div>
         <div class="form-group">
+            <label for="abstract">摘要：</label>
+            <div>
+                <textarea class="form-control" id="abstract" placeholder="文章摘要" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="content">内容：</label>
             <div>
-                <textarea class="form-control" id="content" placeholder="文章Content" rows="30"></textarea>
+                <textarea class="form-control" id="content" placeholder="文章内容" rows="30"></textarea>
             </div>
         </div>
         <div class="form-group pull-right">
@@ -109,6 +124,8 @@
                 {
                     title : $("#title").val().trim(),
                     originalContent : $("#content").val(),
+                    artAbstract: $("#abstract").val(),
+                    category: $("#category").val(),
                     iscovered : iscovered
                 },
                 function (submitInfo) {

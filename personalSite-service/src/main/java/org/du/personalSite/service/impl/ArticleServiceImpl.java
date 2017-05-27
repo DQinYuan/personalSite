@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by duqinyuan on 2017/5/11.
@@ -48,12 +50,37 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
             oldArticle.setContent(articleInfo.getContent());
+            oldArticle.setOriginalContent(articleInfo.getOriginalContent());
+            oldArticle.setCategory(articleInfo.getCategory());
+            oldArticle.setArtAbstract(articleInfo.getArtAbstract());
             articleDao.update(oldArticle);
         }
 
         return true;
     }
 
+    @Transactional
+    public List<ArticleInfo> getArticles(Integer cateId) throws Exception {
+        if ( cateId == null || cateId == -1 ){
+            List<Article> artList = articleDao.findAll(Article.class);
+            return articlesToInfo(artList);
+        }
+
+        List<Article> artList = articleDao.getByCate(cateId);
+        return articlesToInfo(artList);
+    }
+
+    public List<ArticleInfo> articlesToInfo(List<Article> artList){
+        List<ArticleInfo> infoList = new ArrayList<ArticleInfo>();
+        for ( Article art : artList ){
+            ArticleInfo artInfo = new ArticleInfo();
+            artInfo.setTitle(art.getTitle());
+            artInfo.setArtAbstract(art.getArtAbstract());
+            artInfo.setId(art.getId());
+            infoList.add(artInfo);
+        }
+        return infoList;
+    }
 
     public Article getFromInfo(ArticleInfo articleInfo){
         Article article = new Article();

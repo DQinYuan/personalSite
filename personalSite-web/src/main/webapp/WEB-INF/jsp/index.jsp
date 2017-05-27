@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
 <body>
     <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
 
-    <div class="panel
+   <%-- <div class="panel
                 panel-default
                 thumb-panel">
         <div class="panel-heading">
@@ -28,9 +28,9 @@
             Java是一门面向对象编程语言，不仅吸收了C++语言的各种优点，还摒弃了C++里难以理解的多继承、指针等概念，因此Java语言具有功能强大和简单易用两个特征。
             Java语言作为静态面向对象编程语言的代表，极好地实现了面向对象理论，允许程序员以优雅的思维方式进行复杂的编程......
         </div>
-    </div>
+    </div>--%>
 
-    <div class="panel
+   <%-- <div class="panel
                 panel-default
                 thumb-panel">
         <div class="panel-heading">
@@ -86,6 +86,9 @@
             数据仓库，英文名称为Data Warehouse，可简写为DW或DWH。数据仓库，是为企业所有级别的决策制定过程，提供所有类型数据支持的战略集合。
             它是单个数据存储，出于分析性报告和决策支持目的而创建。 为需要业务智能的企业，提供指导业务流程改进、监视时间、成本、质量以及控制......
         </div>
-    </div>
+    </div>--%>
 </body>
+<script>
+    getArticles(-1);
+</script>
 </html>
