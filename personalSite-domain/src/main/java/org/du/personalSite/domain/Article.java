@@ -2,6 +2,10 @@ package org.du.personalSite.domain;
 
 
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.du.personalSite.domain.utils.MarkdowmInter;
+import org.du.personalSite.domain.utils.Registry;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -120,11 +124,11 @@ public class Article implements Serializable{
         this.browseTimes = browseTimes;
     }
 
-    public Boolean getPublished() {
+    public Boolean getIsPublished() {
         return isPublished;
     }
 
-    public void setPublished(Boolean published) {
+    public void setIsPublished(Boolean published) {
         isPublished = published;
     }
 
@@ -144,4 +148,28 @@ public class Article implements Serializable{
         this.artAbstract = artAbstract;
     }
 
+    /**
+     * 被阅读num次，browseTimes要增加响应次数
+     * @param num  被阅读的次数
+     */
+    public void beReaded(long num){
+        Long numNow = getBrowseTimes();
+        if ( numNow == null ){
+            setBrowseTimes(num);
+        } else {
+            numNow += num;
+            setBrowseTimes(numNow);
+        }
+
+    }
+
+    public void publishToggle() {
+        setIsPublished(getIsPublished()?false:true);
+    }
+
+    public void generateContent(String originalContent){
+        setOriginalContent(originalContent);
+        String escapedStr = StringEscapeUtils.escapeHtml4(originalContent);
+        setContent(Registry.query(MarkdowmInter.class).resolve(escapedStr));
+    }
 }

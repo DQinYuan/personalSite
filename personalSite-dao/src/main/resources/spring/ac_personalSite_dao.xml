@@ -17,7 +17,7 @@
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
                 <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/personalSite?characterEncoding=utf-8"/>
                 <property name="username" value="root"/>
-                <property name="password" value="root"/>
+                <property name="password" value="123456"/>
                 <property name="connectionTestQuery" value="select 1 from dual"/>
                 <property name="connectionTimeout" value="15000"/>
                 <property name="idleTimeout" value="600000"/>
@@ -36,6 +36,10 @@
             <list>
                 <value>org.du.personalSite.domain.User</value>
                 <value>org.du.personalSite.domain.Article</value>
+                <value>org.du.personalSite.domain.Comment</value>
+                <value>org.du.personalSite.domain.LeaveMessage</value>
+                <value>org.du.personalSite.domain.Label</value>
+                <value>org.du.personalSite.domain.ArticleLabel</value>
             </list>
         </property>
         <!-- 定义hibernate的SessionFactory属性 -->

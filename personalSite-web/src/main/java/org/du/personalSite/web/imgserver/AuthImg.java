@@ -15,6 +15,8 @@ import java.util.Random;
 @WebServlet(urlPatterns={"/authImg.jpg"})
 public class AuthImg extends HttpServlet
 {
+	public static final String RAND = "rand";
+
 	private final Font mFont =
 		new Font("Arial Black", Font.PLAIN, 16);
 	private final int IMG_WIDTH = 100;
@@ -75,7 +77,7 @@ public class AuthImg extends HttpServlet
 			g.drawString(tmp , 15 * i + 10,15);
 		}
 		HttpSession session = request.getSession(true);
-		session.setAttribute("rand" , sRand);
+		session.setAttribute(RAND , sRand);
 		g.dispose();
 		ImageIO.write(image, "JPEG", response.getOutputStream());
 	}

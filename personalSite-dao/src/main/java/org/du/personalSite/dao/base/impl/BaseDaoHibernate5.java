@@ -26,25 +26,25 @@ public class BaseDaoHibernate5<T> implements BaseDao<T>
 		return this.sessionFactory;
 	}
 
-	public T get(Class<T> entityClazz , Serializable id) throws Exception
+	public T get(Class<T> entityClazz , Serializable id)
 	{
 		return (T)getSessionFactory().getCurrentSession()
 			.get(entityClazz , id);
 	}
-	public Serializable save(T entity) throws Exception
+	public Serializable save(T entity)
 	{
 		return getSessionFactory().getCurrentSession()
 			.save(entity);
 	}
-	public void update(T entity) throws Exception
+	public void update(T entity)
 	{
 		getSessionFactory().getCurrentSession().saveOrUpdate(entity);
 	}
-	public void delete(T entity) throws Exception
+	public void delete(T entity)
 	{
 		getSessionFactory().getCurrentSession().delete(entity);
 	}
-	public void delete(Class<T> entityClazz , Serializable id) throws Exception
+	public void delete(Class<T> entityClazz , Serializable id)
 	{
 		getSessionFactory().getCurrentSession()
 			.createQuery("delete " + entityClazz.getSimpleName()
@@ -52,13 +52,12 @@ public class BaseDaoHibernate5<T> implements BaseDao<T>
 			.setParameter("0" , id)
 			.executeUpdate();
 	}
-	public List<T> findAll(Class<T> entityClazz) throws Exception
-	{
+	public List<T> findAll(Class<T> entityClazz){
 		return find("select en from "
 			+ entityClazz.getSimpleName() + " en");
 	}
 
-	public long findCount(Class<T> entityClazz) throws Exception
+	public long findCount(Class<T> entityClazz)
 	{
 		List<?> l = find("select count(*) from "
 			+ entityClazz.getSimpleName());
@@ -70,14 +69,14 @@ public class BaseDaoHibernate5<T> implements BaseDao<T>
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<T> find(String hql) throws Exception
+	protected List<T> find(String hql)
 	{
 		return (List<T>)getSessionFactory().getCurrentSession()
 			.createQuery(hql)
 			.list();
 	}
 	@SuppressWarnings("unchecked")
-	protected List<T> find(String hql , Object... params) throws Exception
+	protected List<T> find(String hql , Object... params)
 	{
 		Query query = getSessionFactory().getCurrentSession()
 			.createQuery(hql);
@@ -88,9 +87,20 @@ public class BaseDaoHibernate5<T> implements BaseDao<T>
 		return (List<T>)query.list();
 	}
 
+	protected  Long findNum(String hql , Object... params)
+	{
+		Query query = getSessionFactory().getCurrentSession()
+				.createQuery(hql);
+		for(int i = 0 , len = params.length ; i < len ; i++)
+		{
+			query.setParameter(i + "" , params[i]);
+		}
+		return (Long)query.uniqueResult();
+	}
+
 	@SuppressWarnings("unchecked")
 	protected List<T> findByPage(String hql,
-		 int pageNo, int pageSize) throws Exception
+		 int pageNo, int pageSize)
 	{
 		return getSessionFactory().getCurrentSession()
 			.createQuery(hql)
@@ -101,7 +111,7 @@ public class BaseDaoHibernate5<T> implements BaseDao<T>
 
 	@SuppressWarnings("unchecked")
 	protected List<T> findByPage(String hql , int pageNo, int pageSize
-		, Object... params) throws Exception
+		, Object... params)
 	{
 		Query query = getSessionFactory().getCurrentSession()
 			.createQuery(hql);

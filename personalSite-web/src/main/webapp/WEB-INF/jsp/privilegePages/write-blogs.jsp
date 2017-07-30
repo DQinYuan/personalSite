@@ -7,14 +7,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <title>DQYuan's blog</title>
 </head>
 <body>
     <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
-    <form role="form" class=" col-lg-8 col-lg-offset-2">
+    <form role="form" class="col-lg-8 col-lg-offset-2 cleared">
         <div class="form-group pull-left" style="width: 30%">
             <label for="abstract">文章分类：</label>
             <select id="category" class="selectpicker show-tick form-control" data-live-search="false">
@@ -26,20 +24,20 @@
         </div>
         <div class="form-group">
             <div>
-                <input type="text" class="form-control" id="title" placeholder="文章标题"/>
+                <input type="text" class="form-control" id="title" placeholder="文章标题" value="${article.title}"/>
             </div>
         </div>
         <div class="form-group">
             <label for="abstract">摘要：</label>
             <div>
-                <textarea class="form-control" id="abstract" placeholder="文章摘要" rows="3"></textarea>
+                <textarea class="form-control" id="abstract" placeholder="文章摘要" rows="3">${article.artAbstract}</textarea>
             </div>
         </div>
 
         <div class="form-group">
             <label for="content">内容：</label>
             <div>
-                <textarea class="form-control" id="content" placeholder="文章内容" rows="30"></textarea>
+                <textarea class="form-control" id="content" placeholder="文章内容" rows="30">${article.originalContent}</textarea>
             </div>
         </div>
         <div class="form-group pull-right">
@@ -47,23 +45,12 @@
                 保存到草稿箱
             </button>
         </div>
-    </form>
-
-    <%-- 提示消息模态框 --%>
-    <div class="modal fade" id="show-msg" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">
-                        <span class="glyphicon glyphicon-tree-deciduous"></span>提示
-                    </h4>
-                </div>
-                <div class="modal-body" id="signin-modal-body">
-                    <strong id="msg" style="color: red"></strong>
-                </div>
-            </div>
+        <div class="form-group pull-left">
+            <a type="button" class="btn btn-default" href="/articles/articleList.action">
+                查看所有文章状态
+            </a>
         </div>
-    </div>
+    </form>
 
     <%-- 覆盖原文本模态框 --%>
     <div class="modal fade" id="cover-msg" role="dialog" aria-hidden="true">
@@ -88,6 +75,9 @@
         </div>
     </div>
 </body>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="/js/common.js"></script>
 <script>
     function checkSubmit() {
         var title = $("#title").val().trim();
@@ -95,25 +85,6 @@
             return "文章标题不能为空";
         }
         return "";
-    }
-
-    function showModalsecs(msg) {
-        secs = 1;          //模态框1秒自动关闭
-        count = secs;
-        clearFlag = 0;
-        $("#msg").html(msg);
-        $("#show-msg").modal("show");
-        clearFlag = self.setInterval("autoClose()", 1000);
-    }
-
-    function autoClose() {
-        if ( count > 0 ){
-            count --;
-        }else {
-            $("#show-msg").modal("hide");
-            count = secs;
-            self.clearInterval(clearFlag);
-        }
     }
 
     function submitPost(iscovered) {
@@ -152,5 +123,9 @@
     $("#cover-button").click(function () {
         submitPost(true)
     });
+
+    <c:if test="${article != null}">
+        $("#category option[value=" + ${article.category} + "]").attr("selected", true);
+    </c:if>
 </script>
 </html>

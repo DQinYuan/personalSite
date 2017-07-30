@@ -1,5 +1,6 @@
 package org.du.personalSite.service.base;
 
+import org.du.personalSite.domain.utils.Registry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,7 @@ import javax.annotation.Resource;
  * @version 1.0
  */
 @Service
-public class Registry {
-
-    private static Registry instance;
+public class RegistryWithAC extends Registry{
 
     private static ApplicationContext acNow;
 
@@ -25,18 +24,11 @@ public class Registry {
     @PostConstruct
     public void init(){
         acNow = ac;
-        Registry.setInstance(this);
+        setInstance(this);
     }
 
-    public static <T> T query(Class<T> t){
+    @Override
+    public <T> T getBean(Class<T> t) {
         return acNow.getBean(t);
-    }
-
-    public static Registry getInstance() {
-        return instance;
-    }
-
-    public static void setInstance(Registry instance) {
-        Registry.instance = instance;
     }
 }

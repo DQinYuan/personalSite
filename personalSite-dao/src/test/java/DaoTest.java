@@ -33,14 +33,13 @@ public class DaoTest {
     ApplicationContext ac;
 
     //用于插入用户的方法，@Rollback(false)保证了Junit不会自动回滚事务
-    @Ignore
     @Transactional
     @Rollback(false)
     @Test
     public void insertUser(){
         User me = new User();
         me.setNickname("DQYuan");
-        me.setPassword("3905084dqy");
+        me.generatePassword("3905084dqy");
         me.setRealname("杜沁园");
         me.setCreateTime(new Date());
         me.setRegistered(true);
@@ -49,7 +48,7 @@ public class DaoTest {
 
         User youke1 = new User();
         youke1.setNickname("YouKe1");
-        youke1.setPassword("123456");
+        youke1.generatePassword("123456");
         youke1.setRealname("游客1");
         youke1.setCreateTime(new Date());
         youke1.setRegistered(true);
@@ -59,7 +58,7 @@ public class DaoTest {
 
         User youke2 = new User();
         youke2.setNickname("YouKe2");
-        youke2.setPassword("123456");
+        youke2.generatePassword("123456");
         youke2.setRealname("游客2");
         youke2.setCreateTime(new Date());
         youke2.setRegistered(true);
@@ -68,7 +67,7 @@ public class DaoTest {
 
         User youke3 = new User();
         youke3.setNickname("YouKe3");
-        youke3.setPassword("123456");
+        youke3.generatePassword("123456");
         youke3.setRealname("游客3");
         youke3.setCreateTime(new Date());
         youke3.setRegistered(true);
@@ -92,7 +91,7 @@ public class DaoTest {
     public void query(){
         User me = new User();
         me.setNickname("DQYuan");
-        me.setPassword("3905084dqy");
+        me.generatePassword("3905084dqy");
         try {
             me = userDao.getByNicknameAndPass(me);
             if ( me == null )
@@ -113,7 +112,7 @@ public class DaoTest {
 
         User youke = new User();
         youke.setNickname("YouKe1");
-        youke.setPassword("123456");
+        youke.generatePassword("123456");
 
         try {
             youke = userDao.getByNicknameAndPass(youke);

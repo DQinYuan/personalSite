@@ -1,12 +1,11 @@
 package org.du.personalSite.web.controller;
 
-import com.alibaba.fastjson.JSON;
 import org.du.personalSite.domain.DomainConstant;
-import org.du.personalSite.domain.User;
-import org.du.personalSite.domain.vo.LoginInfo;
+import org.du.personalSite.web.vo.response.LoginInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.UserService;
 import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.web.imgserver.AuthImg;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +34,18 @@ public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+
+
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public void userLogin(UserInfo user, String vcode, HttpSession session, HttpServletRequest request, HttpServletResponse response, Boolean iniPage) throws Exception{
         //返回json数据
         LoginInfo loginInfo = new LoginInfo();
 
-        Boolean islogined = (Boolean) session.getAttribute("islogined");
+        Boolean islogined = (Boolean) session.getAttribute(WebConstant.ISLOGINED);
 
         //如果已经登录成功
         if ( islogined != null && islogined  == true ){
-            String nickname = (String) session.getAttribute("nickname");
+            String nickname = (String) session.getAttribute(WebConstant.NICKNAME);
             loginInfo.setNickname(nickname);
             loginInfo.setIslogined(islogined);
             AjaxUtils.reponseAjax(response, loginInfo);
@@ -55,8 +56,8 @@ public class UserController {
         }
 
         //验证码不正确
-        if ( !vcode.equals(session.getAttribute("rand")) ){
-            session.setAttribute("islogined", false);
+        if ( !vcode.equals(session.getAttribute(AuthImg.RAND)) ){
+            session.setAttribute(WebConstant.ISLOGINED, false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("验证码错误");
             AjaxUtils.reponseAjax(response, loginInfo);
@@ -66,7 +67,7 @@ public class UserController {
 
         //用户名或者密码不能为空
         if ( StringUtils.isBlank(user.getNickname()) || StringUtils.isBlank(user.getPassword()) ){
-            session.setAttribute("islogined", false);
+            session.setAttribute(WebConstant.ISLOGINED, false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("用户名或者密码不能为空");
             AjaxUtils.reponseAjax(response, loginInfo);
@@ -85,18 +86,18 @@ public class UserController {
         }
 
         if ( result == DomainConstant.LOGIN_FAIL ){
-            session.setAttribute("islogined", false);
+            session.setAttribute(WebConstant.ISLOGINED, false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("用户名或者密码错误");
             logger.info("ip地址" + request.getRemoteAddr() + "用户名或者密码错误");
         }
         if ( result == DomainConstant.LOGIN_SUCCESS ){
-            session.setAttribute("islogined", true);
+            session.setAttribute(WebConstant.ISLOGINED, true);
             loginInfo.setIslogined(true);
             loginInfo.setNickname(user.getNickname());
-            session.setAttribute("nickname", outUser.getNickname());
-            session.setAttribute("level", outUser.getLevel());
-            session.setAttribute("user", outUser);
+            session.setAttribute(WebConstant.NICKNAME, outUser.getNickname());
+            session.setAttribute(WebConstant.LEVEL, outUser.getLevel());
+            session.setAttribute(WebConstant.USER, outUser);
             logger.info("用户" + user.getNickname() + "登录成功");
         }
         AjaxUtils.reponseAjax(response, loginInfo);

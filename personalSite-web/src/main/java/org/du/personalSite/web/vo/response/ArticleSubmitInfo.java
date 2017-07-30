@@ -1,4 +1,4 @@
-package org.du.personalSite.domain.vo;
+package org.du.personalSite.web.vo.response;
 
 /**
  * Created by duqinyuan on 2017/5/11.

@@ -23,22 +23,21 @@
             </ul>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a class="cate-a" cateId="-1">首页</a></li>
-                <li class="dropdown">
+            <ul class="nav navbar-nav" id="mainNavul">
+                <li class="active delActive"><a class="cate-a" cateId="-1">首页</a></li>
+                <li class="dropdown delActive">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         聊聊技术
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="cate-a" cateId="-1">全部</a></li>
                         <li><a class="cate-a" cateId="0">杂谈</a></li>
                         <li><a class="cate-a" cateId="1">笔记</a></li>
                         <li><a class="cate-a" cateId="2">教程</a></li>
                     </ul>
                 </li>
-                <li><a class="cate-a" cateId="3" type="button">聊聊生活</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-pencil"/>留言</a></li>
+                <li class="delActive"><a class="cate-a" cateId="3">聊聊生活</a></li>
+                <li class="delActive"><a id="leaveMessage"><span class="glyphicon glyphicon-pencil"/>留言</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="signup-in">
                 <li id="signup-nav"><a role="button" data-toggle="modal" data-target="#sign-up"><span
@@ -155,6 +154,55 @@
     </div>
 </div>
 
+<%-- 提示消息模态框 --%>
+<div class="modal fade" id="show-msg" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span class="glyphicon glyphicon-tree-deciduous"></span>提示
+                </h4>
+            </div>
+            <div class="modal-body">
+                <strong id="msg" style="color: red"></strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-- 修改留言模态框 --%>
+<div class="modal fade" id="modifyLeaveMessageModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    修改留言
+                </h4>
+            </div>
+            <form action="" class="form-horizontal" role="form">
+                <div class="modal-body" id="modifyLeaveMessage-modal-body">
+                    <div class="form-group">
+                        <div class="col-sm-10">
+                            <textarea id="modifiedLeaveMessage" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="submitModLeaveMessage">
+                        提交
+                    </button>
+                </div>
+                <input type="hidden" id="leaveMessageId" value=""/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
 <%--     搜索框    --%>
 <form class="pull-right
                      col-lg-3 col-lg-offset-8
@@ -163,116 +211,12 @@
                      col-xs-8 col-xs-offset-3" role="form">
     <div class="input-group">
         <span class="input-group-addon"><a><span class="glyphicon glyphicon-search"></span></a></span>
-        <input type="text" class="form-control" placeholder="搜索本文">
+        <input type="text" class="form-control" placeholder="搜索本站">
     </div>
 </form>
 <br/>
 <br/>
 <br/>
-<script>
-    $(function () {
-        $.post(
-            "/users/login.action",
-            {
-                iniPage : true
-            },
-            function (loginInfo) {
-                var islogined = loginInfo.islogined;
-                if ( islogined ){
-                    $("#signup-nav").remove();
-                    $("#login-nav").remove();
-                    $("#sign-in").remove();
-                    $("#sign-up").remove();
-                    $("#signup-in").append($("<li><a>欢迎" + loginInfo.nickname +" 光临本站</a></li>"));
-                }
-            }
-        )
-
-        function submitLogin() {
-            $.post(
-                "/users/login.action",
-                {
-                    nickname : $("#username-signin") .val().trim(),
-                    password : $("#password-signin").val().trim(),
-                    vcode: $("#verification-code-signin").val().trim()
-                },
-                function (loginInfo) {
-                    var islogined = loginInfo.islogined;
-                    if ( !islogined ){
-                        showLoginMsg(loginInfo.errormsg);
-                    } else {
-                        $("#sign-in").on("hidden.bs.modal", function () {
-                            $("#signup-nav").remove();
-                            $("#login-nav").remove();
-                            $("#sign-in").remove();
-                            $("#sign-up").remove();
-                            $("#signup-in").append($("<li><a>欢迎" + loginInfo.nickname +" 光临本站</a></li>"));
-                        })
-                        $("#sign-in").modal('hide');
-                    }
-                }
-            )
-        }
-
-        function checkLogin() {
-            var nickname = $("#username-signin") .val().trim();
-            var password = $("#password-signin").val().trim();
-            var vcode = $("#verification-code-signin").val().trim();
-            var pattern = new RegExp("[~'!@#$%^&*()-+_=:\<\>]");
-            if ( nickname == "" || password == "" || vcode == "" ){
-                return "字段不能为空";
-            }
-            if ( pattern.test(nickname) || pattern.test(password) || pattern.test(vcode) ){
-                return "字段中不能含有特殊字符";
-            }
-            return "";
-        }
-
-        function showLoginMsg(msg) {
-            $("#signin-modal-body").append($(" <div class='alert alert-error'> <a class='close' data-dismiss='alert'>×</a> <strong style='color: red' >"
-                + msg +"</strong> </div>"));
-            var timestamp = new Date().getTime();
-            $("#loginimg").attr("src", $("#loginimg").attr('src') + '?' +timestamp);
-        }
-
-        $("#loginbutton").click(function () {
-            var checkResult = checkLogin();
-            if ( !(checkResult == "") ){
-                showLoginMsg(checkResult)
-            } else {
-                submitLogin();
-            }
-        });
-
-        $("#loginimg").click(function () {
-            var timestamp = new Date().getTime();
-            $(this).attr("src", $(this).attr('src') + '?' +timestamp);
-        });
-    })
-
-    function getArticles(cateId) {
-        $.get(
-            "/articles/getArticles.action",
-            {
-                cateId:cateId
-            },
-            function (articles) {
-                $(".thumb-panel").remove();
-                for (var i = 0; i < articles.length; i++ ){
-                    $("body").append($(" <div class='panel panel-default thumb-panel'><div class='panel-heading'>"
-                        + "<h3 class='panel-title'> <a href='#'>" + articles[i].title
-                        + "</a> </h3> </div> <div class='panel-body'>" + articles[i].artAbstract
-                        + "</div> </div>"));
-                }
-
-            }
-        )
-    }
-
-    $(".cate-a").click(function () {
-        getArticles($(this).attr("cateId"));
-    });
-</script>
 <%-- Common Content Enf --%>
 
 

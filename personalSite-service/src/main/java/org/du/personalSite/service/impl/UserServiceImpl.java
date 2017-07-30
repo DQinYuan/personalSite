@@ -1,5 +1,6 @@
 package org.du.personalSite.service.impl;
 
+import org.du.personalSite.service.base.assembler.UserAssembler;
 import org.springframework.beans.BeanUtils;
 import org.du.personalSite.dao.UserDao;
 import org.du.personalSite.domain.User;
@@ -24,10 +25,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserInfo verifyUser(UserInfo inUser) throws Exception {
         //vo转po
-        User user = getFromInfo(inUser);
+        User user = UserAssembler.getFromInfo(inUser);
+        user.generatePassword(user.getPassword());
 
         User currUser = userDao.getByNicknameAndPass(user);
-        if ( currUser == null ){
+        //如果该用户不存在或者该用户还处于未注册状态
+        if ( currUser == null || !currUser.getRegistered() ){
             return null;
         }
 
@@ -41,9 +44,5 @@ public class UserServiceImpl implements UserService {
         return outuser;
     }
 
-    public User getFromInfo(UserInfo userInfo){
-        User user = new User();
-        BeanUtils.copyProperties(userInfo, user);
-        return user;
-    }
+
 }

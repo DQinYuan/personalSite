@@ -51,4 +51,23 @@ public class StringUtils {
 		return (target == null || "".equals(target));
 	}
 
+	/**
+	 * 检验一个字符串是否为数字
+	 * @param target
+	 * @return
+	 */
+	public static boolean isNum(String target){
+		if ( isBlank(target) ){
+			return false;
+		}
+		String regex = "^\\d+$";
+		Matcher m=Pattern.compile(regex).matcher(target);
+		return m.matches();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(isNum(null));
+		System.out.println(isNum("3333"));
+		System.out.println(isNum("hhhhh"));
+	}
 }

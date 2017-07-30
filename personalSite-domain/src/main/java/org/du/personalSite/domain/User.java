@@ -1,5 +1,7 @@
 package org.du.personalSite.domain;
 
+import org.du.personalSite.domain.utils.MD5Utils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -123,5 +125,18 @@ public class User implements Serializable{
 
     public void setOtherPersonalInformation(String otherPersonalInformation) {
         this.otherPersonalInformation = otherPersonalInformation;
+    }
+
+    //判断是否是不入库的虚拟账户
+    public boolean isVisual(){
+        if ( getId() == null ){
+            return true;
+        }
+        return false;
+    }
+
+    public void generatePassword(String password){
+        String nickname = getNickname();
+        setPassword(MD5Utils.encode(nickname + password));
     }
 }

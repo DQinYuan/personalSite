@@ -13,7 +13,7 @@ public class ServiceTest {
 
     @Test
     public void markdownTest(){
-        String markdownString = "#**标题一**\n---";
+        String markdownString = "<script>alert('aaa')</script>";
         try {
             String result = new Markdown4jProcessor().process(markdownString);
             System.out.println(markdownString);

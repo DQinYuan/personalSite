@@ -1,14 +1,13 @@
 package org.du.personalSite.web.controller;
 
-import com.alibaba.fastjson.JSON;
 import org.du.personalSite.domain.vo.ArticleInfo;
-import org.du.personalSite.domain.vo.ArticleSubmitInfo;
+import org.du.personalSite.web.vo.response.ArticleSubmitInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.ArticleService;
-import org.du.personalSite.service.ServiceConstant;
 import org.du.personalSite.utils.StringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.utils.CheckUtils;
+import org.du.personalSite.web.utils.MvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -35,14 +34,19 @@ public class ArticleController {
     ArticleService articleService;
 
     @RequestMapping("write-blogs")
-    public ModelAndView writeBlog(HttpSession session) throws Exception{
+    public ModelAndView writeBlog(HttpSession session, String artTitle) throws Exception{
         ModelAndView modelAndView = new ModelAndView();
         if ( !CheckUtils.checkLoginAndLevel(session) ){
             modelAndView.setViewName("index");
         } else {
+            if ( StringUtils.isNotBlank(artTitle) ){
+                ArticleInfo articleInfo = articleService.getByTitle(artTitle);
+                modelAndView.addObject("article", articleInfo);
+            }
             modelAndView.setViewName("/privilegePages/write-blogs");
-            logger.info("用户" + session.getAttribute("nickname") +"进入写作系统");
         }
+
+        logger.info("用户" + session.getAttribute("nickname") +"进入写作系统");
         return modelAndView;
     }
 
@@ -66,8 +70,7 @@ public class ArticleController {
             return;
         }
 
-        articleInfo.setOwner((UserInfo) session.getAttribute("user"));
-        articleInfo.setPublished(false);
+        articleInfo.setOwner((UserInfo) session.getAttribute(WebConstant.USER));
 
         Boolean saveResult = articleService.saveUnpublishedArt(articleInfo, iscovered);
 
@@ -75,7 +78,6 @@ public class ArticleController {
             articleSubmitInfo.setMsg("文章保存成功");
             articleSubmitInfo.setSuccess(true);
             articleSubmitInfo.setShowcover(false);
-
 
             logger.info("用户" + session.getAttribute("nickname") +"成功保存Article" + articleInfo.getTitle());
 
@@ -91,12 +93,57 @@ public class ArticleController {
     }
 
     @RequestMapping("getArticles")
-    public void getArticles(Integer cateId, HttpServletResponse response) throws Exception{
+    public void getArticles(Integer cateId,String pageNum  ,HttpServletResponse response) throws Exception{
+        if ( !StringUtils.isNum(pageNum) ){
+            return;
+        }
 
-        List<ArticleInfo> artList = articleService.getArticles(cateId);
+        List<ArticleInfo> artList = articleService.getArticlesByPage(cateId, Integer.parseInt(pageNum));
 
         AjaxUtils.reponseAjax(response, artList);
 
+    }
+
+    @RequestMapping("readArticle")
+    public ModelAndView readArticle(String articleId, HttpSession session) throws Exception {
+        if ( !StringUtils.isNum(articleId) ){
+            return MvUtils.getIllgalRequestMv();
+        }
+
+        UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
+        ArticleInfo articleInfo = articleService.readArticle(userInfo, articleId);
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("article", articleInfo);
+        mv.setViewName("content-page");
+        return mv;
+    }
+
+    @RequestMapping("articleList")
+    public ModelAndView articleList(HttpSession session) throws Exception{
+        UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
+        ModelAndView mv = new ModelAndView();
+        if ( !CheckUtils.checkLoginAndLevel(session) ){
+            mv.setViewName("index");
+        } else {
+            List<ArticleInfo> articleInfos = articleService.getAllArticlesByUser(userInfo);
+
+            //数据填充
+            mv.addObject("articleInfos", articleInfos);
+
+            mv.setViewName("privilegePages/articleStatus");
+        }
+
+        return mv;
+    }
+
+    @RequestMapping("publishToggle")
+    public void publishToggle(String articleId, HttpServletResponse response, HttpSession session) throws Exception{
+        if ( !CheckUtils.checkLoginAndLevel(session) ){
+            return;
+        }
+
+        boolean result =  articleService.publishToggle(articleId);
+        AjaxUtils.reponseAjax(response, result);
     }
 
 }
