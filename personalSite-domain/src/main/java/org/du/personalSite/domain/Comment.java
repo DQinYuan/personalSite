@@ -4,6 +4,7 @@ package org.du.personalSite.domain;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.du.personalSite.domain.utils.MarkdowmInter;
 import org.du.personalSite.domain.utils.Registry;
+import org.du.personalSite.utils.TimeUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
  * Created by 燃烧杯 on 2017/6/23.
  */
 @Entity
-@Table(name = "comment_inf")
+@Table(name = "comment_inf", indexes = @Index(columnList = "latest_modified_time"))
 public class Comment {
     @Id
     @Column(name = "comment_id")
@@ -40,10 +41,14 @@ public class Comment {
     @Column(name = "response_comment_id")
     private Long responseCommentId;            //回复的评论id，如果为null则表示回复的是文章作者
 
-    @Column(nullable = false)
+    @Lob
+    @Column(length = 16777215, nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     private String content;                 //经过markdown解析得到内容
 
-    @Column(nullable = false, name = "original_content")
+    @Lob
+    @Column(length = 16777215, nullable = false, name = "original_content")
+    @Basic(fetch = FetchType.LAZY)
     private String originalContent;      //markdown原始内容
 
     public Long getId() {
@@ -146,7 +151,7 @@ public class Comment {
                 return false;
             }
         }
-        if ( new Date().getTime() - getCreateTime().getTime() > DomainConstant.CAN_MODIFY_TIME ){
+        if ( TimeUtils.getNowTime().getTime() - getCreateTime().getTime() > DomainConstant.CAN_MODIFY_TIME ){
             return false;
         }
         return true;

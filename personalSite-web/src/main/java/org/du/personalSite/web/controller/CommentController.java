@@ -132,8 +132,8 @@ public class CommentController {
     }
 
     @RequestMapping("commentsList")
-    public ModelAndView commentsList(String title, HttpSession session){
-        if (!CheckUtils.checkLoginAndLevel(session)){
+    public ModelAndView commentsList(String id, HttpSession session){
+        if (!CheckUtils.checkLoginAndLevel(session) || !StringUtils.isNum(id)){
             return MvUtils.getIllgalRequestMv();
         }
 
@@ -141,15 +141,15 @@ public class CommentController {
         List<CommentCustom> commentCustoms;
         Article article;
         try {
-            commentCustoms = commentService.getAllCommentsBelongToArt(userInfo, title);
-            article = articleService.getByTitle(title);
+            article = articleService.getById(Long.parseLong(id));
+            commentCustoms = commentService.getAllCommentsBelongToArt(userInfo, article.getTitle());
         } catch (PersonalSiteException e){
             return  MvUtils.getIllgalRequestMv();
         }
 
         ModelAndView mv = new ModelAndView();
         mv.addObject("commentCustoms", commentCustoms);
-        mv.addObject("title", title);
+        mv.addObject("title", article.getTitle());
         mv.addObject("article", article);
         mv.setViewName("privilegePages/commentsList");
         return mv;

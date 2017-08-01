@@ -49,12 +49,12 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     <!-- 配置错误页面 -->
-   <!-- <error-page>
+   <error-page>
         <error-code>500</error-code>
         <location>/WEB-INF/jsp/error/500.jsp</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/jsp/error/404.jsp</location>
-    </error-page>-->
+    </error-page>
 </web-app>

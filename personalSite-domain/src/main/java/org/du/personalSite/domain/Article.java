@@ -17,7 +17,7 @@ import java.util.Date;
  * @version 1.0
  */
 @Entity
-@Table(name = "article_inf")
+@Table(name = "article_inf", indexes = @Index(columnList = "latest_modified_time"))
 public class Article implements Serializable{
     @Id
     @Column(name = "article_id")

@@ -33,53 +33,32 @@ public class DaoTest {
     ApplicationContext ac;
 
     //用于插入用户的方法，@Rollback(false)保证了Junit不会自动回滚事务
+    @Ignore
     @Transactional
     @Rollback(false)
     @Test
     public void insertUser(){
         User me = new User();
         me.setNickname("DQYuan");
-        me.generatePassword("3905084dqy");
+        me.generatePassword("19950207");
         me.setRealname("杜沁园");
         me.setCreateTime(new Date());
         me.setRegistered(true);
         me.setLevel(0);
         me.setOtherPersonalInformation("无");
 
-        User youke1 = new User();
-        youke1.setNickname("YouKe1");
-        youke1.generatePassword("123456");
-        youke1.setRealname("游客1");
-        youke1.setCreateTime(new Date());
-        youke1.setRegistered(true);
-        youke1.setLevel(1);
-        youke1.setOtherPersonalInformation("无");
-
-
-        User youke2 = new User();
-        youke2.setNickname("YouKe2");
-        youke2.generatePassword("123456");
-        youke2.setRealname("游客2");
-        youke2.setCreateTime(new Date());
-        youke2.setRegistered(true);
-        youke2.setLevel(1);
-        youke2.setOtherPersonalInformation("无");
-
-        User youke3 = new User();
-        youke3.setNickname("YouKe3");
-        youke3.generatePassword("123456");
-        youke3.setRealname("游客3");
-        youke3.setCreateTime(new Date());
-        youke3.setRegistered(true);
-        youke3.setLevel(1);
-        youke3.setOtherPersonalInformation("无");
-
+        User nanxia = new User();
+        nanxia.setNickname("南夏");
+        nanxia.generatePassword("19941214");
+        nanxia.setRealname("夏窦莹");
+        nanxia.setCreateTime(new Date());
+        nanxia.setRegistered(true);
+        nanxia.setLevel(0);
+        nanxia.setOtherPersonalInformation("无");
 
         try {
             userDao.save(me);
-            userDao.save(youke1);
-            userDao.save(youke2);
-            userDao.save(youke3);
+            userDao.save(nanxia);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -105,6 +84,7 @@ public class DaoTest {
         }
     }
 
+    @Ignore
     @Test
     @Transactional
     public void testAc(){

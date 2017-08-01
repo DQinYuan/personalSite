@@ -2,24 +2,23 @@ package org.du.personalSite.service.impl;
 
 import org.du.personalSite.dao.ArticleDao;
 import org.du.personalSite.dao.CommentDao;
-import org.du.personalSite.dao.UserDao;
 import org.du.personalSite.domain.Article;
 import org.du.personalSite.domain.Comment;
 import org.du.personalSite.domain.User;
 import org.du.personalSite.domain.exception.PersonalSiteException;
 import org.du.personalSite.domain.vo.CommentCustom;
 import org.du.personalSite.domain.vo.CommentInfo;
-import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.ArticleService;
 import org.du.personalSite.service.CommentService;
 import org.du.personalSite.service.base.MarkdownResolver;
 import org.du.personalSite.service.base.customer.CommentCustomer;
+import org.du.personalSite.utils.TimeUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
+import java.sql.Time;
 import java.util.List;
 
 /**
@@ -50,8 +49,8 @@ public class CommentServiceImpl implements CommentService {
         comment.generateContent(comment.getOriginalContent());
 
         //时间参数处理
-        comment.setCreateTime(new Date());
-        comment.setLatestModifTime(new Date());
+        comment.setCreateTime(TimeUtils.getNowTime());
+        comment.setLatestModifTime(TimeUtils.getNowTime());
 
         //评论发表者信息
         comment.setOwner(userId);
@@ -85,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.generateContent(newOriginalContent);
-        comment.setLatestModifTime(new Date());
+        comment.setLatestModifTime(TimeUtils.getNowTime());
 
         commentDao.update(comment);
     }

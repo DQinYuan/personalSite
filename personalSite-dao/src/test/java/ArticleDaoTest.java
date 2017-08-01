@@ -1,5 +1,6 @@
 import org.du.personalSite.dao.ArticleDao;
 import org.du.personalSite.domain.Article;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,6 +19,7 @@ public class ArticleDaoTest {
     @Resource
     ArticleDao articleDao;
 
+    @Ignore
     @Test
     @Transactional
     public void test() throws Exception {

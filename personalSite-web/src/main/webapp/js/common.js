@@ -112,6 +112,7 @@ function getArticles(cateId) {
 
 function navActive(node, cateId) {
     $(".delActive").removeClass("active");
+    node.removeClass("cate-a");
 
     if ( cateId != -1 && (cateId == 0 || cateId == 1 || cateId == 2) ){
         $("#mainNavul li:eq(1)").addClass("active");
@@ -141,16 +142,16 @@ function autoClose() {
 }
 
 $(".cate-a").click(function () {
+    var cateId = $(this).attr("cateId");
+    navActive($(this), cateId);
     removeAllCleared();
     pageArrInit();
-    var cateId = $(this).attr("cateId");
     getArticles(cateId);
+    $(this).addClass("cate-a");
     currentCateId = cateId + "";
-
-    navActive($(this), cateId);
 });
 
-function addLeaveMessageFromCustom(nowCustom, canModifyFlag) {
+function addLeaveMessageFromCustom(nowCustom, canModifyFlag, preFlag) {
     var content = nowCustom.leaveMessage.content;
     var leaveMessageId = nowCustom.leaveMessage.id;
     var canModified = nowCustom.canModified;
@@ -169,11 +170,20 @@ function addLeaveMessageFromCustom(nowCustom, canModifyFlag) {
         userShow = nowCustom.user.nickname;
     }
 
-    $('#leaveMessageList').append('<li class="list-group-item" leaveMessageId="'+ leaveMessageId + '">' +
-        '<span class="glyphicon glyphicon-user"></span>' +
-        userShow + ':' + modifyA + '<div>' +
-        content + '</div>' +
-        '</li>');
+    if ( preFlag ){
+        $('#leaveMessageList').prepend('<li class="list-group-item" leaveMessageId="'+ leaveMessageId + '">' +
+            '<span class="glyphicon glyphicon-user"></span>' +
+            userShow + ':' + modifyA + '<div>' +
+            content + '</div>' +
+            '</li>');
+    } else {
+        $('#leaveMessageList').append('<li class="list-group-item" leaveMessageId="'+ leaveMessageId + '">' +
+            '<span class="glyphicon glyphicon-user"></span>' +
+            userShow + ':' + modifyA + '<div>' +
+            content + '</div>' +
+            '</li>');
+    }
+
 
     if ( modifyA != '' ){
         $('.modifyLeaveMessage').click(function () {
@@ -213,7 +223,7 @@ $('#leaveMessage').click(function () {
         function (leaveMessageCustoms) {
             for ( var i = 0; i < leaveMessageCustoms.length; i++ ){
                 var nowCustom = leaveMessageCustoms[i];
-                addLeaveMessageFromCustom(nowCustom);
+                addLeaveMessageFromCustom(nowCustom, false, false);
             }
         }
     );
@@ -234,7 +244,7 @@ $('#leaveMessage').click(function () {
             function (saveLeaveMessagesInfo) {
                 if ( saveLeaveMessagesInfo.isSuccess ){
                     showModalsecs('留言成功');
-                    addLeaveMessageFromCustom(saveLeaveMessagesInfo.custom, true);
+                    addLeaveMessageFromCustom(saveLeaveMessagesInfo.custom, true, true);
                     $('#leaveMessageContent').val('');
                 } else {
                     showModalsecs(saveLeaveMessagesInfo.errorInfo);

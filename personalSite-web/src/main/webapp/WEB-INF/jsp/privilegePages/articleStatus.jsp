@@ -8,6 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <title>DQYuan's blog</title>
 </head>
 <body>
@@ -25,10 +26,10 @@
         <tbody>
             <c:forEach items="${articleInfos}" var="article">
                 <tr>
-                    <td><a href="/articles/write-blogs.action?artTitle=${article.title}">${article.title}</a></td>
+                    <td><a href="/articles/write-blogs.action?id=${article.id}">${article.title}</a></td>
                     <td>${article.browseTimes}</td>
                     <td>${article.latestModifTime}</td>
-                    <td><a href="/comments/commentsList.action?title=${article.title}">${article.commentNum}</a></td>
+                    <td><a href="/comments/commentsList.action?id=${article.id}">${article.commentNum}</a></td>
                     <td>
                         <c:if test="${article.isPublished}">
                             <button type="button" articleId="${article.id}" class="btn btn-success publishButton">
@@ -50,6 +51,7 @@
 <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="/js/common.js"></script>
 <script>
+    currentCateId = '-2';
     $('.publishButton').click(function () {
         var nowButton = $(this);
         $.post(

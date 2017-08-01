@@ -38,4 +38,7 @@ public interface ArticleService {
     Long getIdFromTitle(String title) throws PersonalSiteException;
 
     List<ArticleInfo> getArticlesByPage(Integer cateId, int pageNum);
+
+
+    ArticleInfo getById(long id);
 }

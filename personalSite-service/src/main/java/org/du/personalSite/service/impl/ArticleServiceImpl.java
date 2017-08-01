@@ -15,10 +15,10 @@ import org.du.personalSite.service.base.customer.CommentCustomer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.du.personalSite.utils.TimeUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,8 +53,8 @@ public class ArticleServiceImpl implements ArticleService {
         Article oldArticle = articleDao.getByTitle(article.getTitle());
 
         if ( oldArticle == null ){            //存储新文章
-            article.setCreateTime(new Date());
-            article.setLatestModifTime(new Date());
+            article.setCreateTime(TimeUtils.getNowTime());
+            article.setLatestModifTime(TimeUtils.getNowTime());
             article.generateContent(article.getOriginalContent());
             article.setIsPublished(false);
             articleDao.save(article);
@@ -67,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
             oldArticle.generateContent(articleInfo.getOriginalContent());
             oldArticle.setCategory(articleInfo.getCategory());
             oldArticle.setArtAbstract(articleInfo.getArtAbstract());
-            article.setLatestModifTime(new Date());
+            article.setLatestModifTime(TimeUtils.getNowTime());
             articleDao.update(oldArticle);
         }
 
@@ -161,6 +161,18 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<Article> articles = articleDao.getByPageAndCateAndIsPublished(pageNum,cateId , true);
         return ArticleAssembler.articlesToInfo(articles);
+    }
+
+    @Transactional
+    public ArticleInfo getById(long id) {
+        Article art = articleDao.get(Article.class, id);
+        if ( art == null ){
+            return null;
+        }
+
+        ArticleInfo articleInfo = new ArticleInfo();
+        BeanUtils.copyProperties(art, articleInfo);
+        return articleInfo;
     }
 
     public boolean isArticleOwner(User user, String title) throws PersonalSiteException {

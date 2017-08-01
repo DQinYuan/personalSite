@@ -8,11 +8,11 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <title>DQYuan's blog</title>
 </head>
 <body>
     <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
-
     <div class="panel panel-primary content-panel cleared">
         <div class="panel-heading">
            <div class="panel-title">
@@ -28,7 +28,7 @@
     </div>
 
 
-    <div class="panel panel-default content-panel cleared">
+    <div id="comment_panel" class="panel panel-default content-panel cleared">
         <div class="panel-heading">
             <div class="panel-title">
                 <h5>评论区：</h5>
@@ -190,7 +190,7 @@
 <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="/js/common.js"></script>
 <script>
-
+    currentCateId = '-2';
     function isNull(contentNode, parentNode) {
         if ( contentNode.val().trim() == '' ){
             showNotNullInfo(parentNode);
@@ -253,7 +253,7 @@
             },
             function (submitCommentInfo) {
                 if ( submitCommentInfo.isSuccess ){
-                    location.reload(true);
+                    location.href(URL + "#comment_panel");
                 } else {
                     showNotNullInfo($("#subcomment-modal-body"));
                 }

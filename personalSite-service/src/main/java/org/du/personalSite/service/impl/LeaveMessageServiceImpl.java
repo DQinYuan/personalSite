@@ -9,11 +9,11 @@ import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.LeaveMessageService;
 import org.du.personalSite.service.base.MarkdownResolver;
 import org.du.personalSite.service.base.customer.LeaveMessageCustomer;
+import org.du.personalSite.utils.TimeUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +37,8 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
         leaveMessage.generateContent(originalContent);
         leaveMessage.setIp(ip);
         leaveMessage.setSession(session);
-        leaveMessage.setCreateTime(new Date());
-        leaveMessage.setLastModifiedTime(new Date());
+        leaveMessage.setCreateTime(TimeUtils.getNowTime());
+        leaveMessage.setLastModifiedTime(TimeUtils.getNowTime());
 
         if ( user.getRegistered() ){
             leaveMessage.setOwner(user.getId());
@@ -51,7 +51,7 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
 
     @Transactional(readOnly = true)
     public List<LeaveMessageCustom> getAllLeaveMessageCustoms(User user) {
-        List<LeaveMessage> leaveMessages = leaveMessageDao.findAll(LeaveMessage.class);
+        List<LeaveMessage> leaveMessages = leaveMessageDao.findAll();
         return LeaveMessageCustomer.batchCustom(leaveMessages, user);
     }
 
@@ -76,7 +76,7 @@ public class LeaveMessageServiceImpl implements LeaveMessageService {
         }
 
         leaveMessage.generateContent(originalContent);
-        leaveMessage.setLastModifiedTime(new Date());
+        leaveMessage.setLastModifiedTime(TimeUtils.getNowTime());
 
         leaveMessageDao.update(leaveMessage);
 

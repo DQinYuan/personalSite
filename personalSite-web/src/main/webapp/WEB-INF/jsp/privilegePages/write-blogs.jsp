@@ -8,6 +8,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <title>DQYuan's blog</title>
 </head>
 <body>
@@ -79,6 +80,7 @@
 <script src="https://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="/js/common.js"></script>
 <script>
+    currentCateId = '-2';
     function checkSubmit() {
         var title = $("#title").val().trim();
         if ( title == "" ){

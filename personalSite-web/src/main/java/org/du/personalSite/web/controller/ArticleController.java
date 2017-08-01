@@ -34,13 +34,13 @@ public class ArticleController {
     ArticleService articleService;
 
     @RequestMapping("write-blogs")
-    public ModelAndView writeBlog(HttpSession session, String artTitle) throws Exception{
+    public ModelAndView writeBlog(HttpSession session, String id) throws Exception{
         ModelAndView modelAndView = new ModelAndView();
         if ( !CheckUtils.checkLoginAndLevel(session) ){
             modelAndView.setViewName("index");
         } else {
-            if ( StringUtils.isNotBlank(artTitle) ){
-                ArticleInfo articleInfo = articleService.getByTitle(artTitle);
+            if ( StringUtils.isNotBlank(id) && StringUtils.isNum(id) ){
+                ArticleInfo articleInfo = articleService.getById(Long.parseLong(id));
                 modelAndView.addObject("article", articleInfo);
             }
             modelAndView.setViewName("/privilegePages/write-blogs");

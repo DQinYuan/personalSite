@@ -1,5 +1,6 @@
 import org.du.personalSite.dao.CommentDao;
 import org.du.personalSite.domain.Comment;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,6 +19,7 @@ public class CommentDaoTest {
     @Resource
     CommentDao commentDao;
 
+    @Ignore
     @Test
     @Transactional
     public void insertTest() throws Exception{
@@ -30,6 +32,7 @@ public class CommentDaoTest {
         commentDao.save(comment);
     }
 
+    @Ignore
     @Test
     @Transactional
     public void getNumByArtTest() throws Exception{

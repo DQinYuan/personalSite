@@ -3,6 +3,7 @@ package org.du.personalSite.domain;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.du.personalSite.domain.utils.MarkdowmInter;
 import org.du.personalSite.domain.utils.Registry;
+import org.du.personalSite.utils.TimeUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.Date;
  * Created by 燃烧杯 on 2017/7/12.
  */
 @Entity
-@Table(name = "leave_message_inf")
+@Table(name = "leave_message_inf", indexes = @Index(columnList = "latest_modified_time"))
 public class LeaveMessage {
     @Id
     @Column(name = "leave_message_id")
@@ -21,10 +22,14 @@ public class LeaveMessage {
     @Column(nullable = false)
     String ip;
 
-    @Column(name = "original_content", nullable = false)
+    @Lob
+    @Column(length = 16777215, name = "original_content", nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     String originalContent;
 
-    @Column(nullable = false)
+    @Lob
+    @Column(length = 16777215, nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     String content;
 
     @Column
@@ -37,7 +42,7 @@ public class LeaveMessage {
     Date createTime;
 
     @Column(name = "latest_modified_time", nullable = false)
-    Date lastModifiedTime;
+    Date latestModifTime;
 
     public Long getId() {
         return id;
@@ -96,11 +101,11 @@ public class LeaveMessage {
     }
 
     public Date getLastModifiedTime() {
-        return lastModifiedTime;
+        return latestModifTime;
     }
 
     public void setLastModifiedTime(Date lastModifiedTime) {
-        this.lastModifiedTime = lastModifiedTime;
+        this.latestModifTime = lastModifiedTime;
     }
 
     public boolean canModify(User user){
@@ -116,7 +121,7 @@ public class LeaveMessage {
                 return false;
             }
         }
-        if ( new Date().getTime() - getCreateTime().getTime() > DomainConstant.CAN_MODIFY_TIME ){
+        if ( TimeUtils.getNowTime().getTime() - getCreateTime().getTime() > DomainConstant.CAN_MODIFY_TIME ){
             return false;
         }
         return true;

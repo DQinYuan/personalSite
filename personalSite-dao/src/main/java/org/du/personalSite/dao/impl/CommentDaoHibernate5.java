@@ -13,10 +13,10 @@ import java.util.List;
 @Repository("commentDao")
 public class CommentDaoHibernate5 extends BaseDaoHibernate5<Comment> implements CommentDao {
     public List<Comment> getCommentsByArticle(Long articleId){
-        return find("select c from Comment c where c.articleId = ?0", articleId);
+        return find("select c from Comment c where c.articleId = ?0 order by latestModifTime desc", articleId);
     }
 
     public Long getCommentsNumByArticle(Long articleId){
-        return findNum("select count(*) from Comment c where c.articleId = ?0", articleId);
+        return findNum("select count(*) from Comment c where c.articleId = ?0 order by latestModifTime desc", articleId);
     }
 }

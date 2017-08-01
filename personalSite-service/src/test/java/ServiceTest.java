@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 import org.markdown4j.Markdown4jProcessor;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
  */
 public class ServiceTest {
 
+    @Ignore
     @Test
     public void markdownTest(){
         String markdownString = "<script>alert('aaa')</script>";

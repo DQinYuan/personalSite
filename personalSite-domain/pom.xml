@@ -24,5 +24,10 @@
             <version>3.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.du.personalSite</groupId>
+            <artifactId>personalSite-utils</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

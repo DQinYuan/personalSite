@@ -1,6 +1,7 @@
 package org.du.personalSite.web.controller;
 
 import org.du.personalSite.domain.DomainConstant;
+import org.du.personalSite.utils.TimeUtils;
 import org.du.personalSite.web.vo.response.LoginInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.UserService;
@@ -18,7 +19,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 
 /**
  * Created by duqinyuan on 2017/5/6.
@@ -76,7 +76,7 @@ public class UserController {
         }
 
         user.setIp(request.getRemoteAddr());
-        user.setLatestLoginTime(new Date());
+        user.setLatestLoginTime(TimeUtils.getNowTime());
         int result;
         UserInfo outUser = userService.verifyUser(user);
         if ( outUser == null ){
