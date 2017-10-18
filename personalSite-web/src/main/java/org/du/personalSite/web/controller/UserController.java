@@ -5,7 +5,7 @@ import org.du.personalSite.utils.TimeUtils;
 import org.du.personalSite.web.vo.response.LoginInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.UserService;
-import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.imgserver.AuthImg;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.slf4j.Logger;
@@ -66,7 +66,7 @@ public class UserController {
         }
 
         //用户名或者密码不能为空
-        if ( StringUtils.isBlank(user.getNickname()) || StringUtils.isBlank(user.getPassword()) ){
+        if ( MyStringUtils.isBlank(user.getNickname()) || MyStringUtils.isBlank(user.getPassword()) ){
             session.setAttribute(WebConstant.ISLOGINED, false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("用户名或者密码不能为空");

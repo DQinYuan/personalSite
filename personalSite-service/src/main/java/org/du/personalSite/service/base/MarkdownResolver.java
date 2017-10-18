@@ -1,6 +1,8 @@
 package org.du.personalSite.service.base;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.du.personalSite.domain.utils.MarkdowmInter;
+import org.du.personalSite.utils.MyStringUtils;
 import org.markdown4j.Markdown4jProcessor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,20 @@ public class MarkdownResolver implements MarkdowmInter{
 
     public String resolve(String input) {
         try {
-            return markdownResolver.process(input);
+            String[] inputs = input.split("```");
+            for ( int i = 0; i < inputs.length; i++ ){
+                if ( i % 2 == 0 ){
+                    inputs[i] = StringEscapeUtils.escapeHtml4(inputs[i]);
+                }
+            }
+            String temp = MyStringUtils.joinAll(inputs, "```");
+            String[] temps = temp.split("`");
+            for ( int i = 0; i < temps.length; i++ ){
+                if ( i % 2 != 0 ){
+                    temps[i] = StringEscapeUtils.unescapeHtml4(temps[i]);
+                }
+            }
+            return markdownResolver.process(MyStringUtils.joinAll(temps, "`"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

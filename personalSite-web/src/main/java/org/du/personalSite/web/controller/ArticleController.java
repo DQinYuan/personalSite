@@ -4,7 +4,7 @@ import org.du.personalSite.domain.vo.ArticleInfo;
 import org.du.personalSite.web.vo.response.ArticleSubmitInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.ArticleService;
-import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.utils.CheckUtils;
 import org.du.personalSite.web.utils.MvUtils;
@@ -39,7 +39,7 @@ public class ArticleController {
         if ( !CheckUtils.checkLoginAndLevel(session) ){
             modelAndView.setViewName("index");
         } else {
-            if ( StringUtils.isNotBlank(id) && StringUtils.isNum(id) ){
+            if ( MyStringUtils.isNotBlank(id) && MyStringUtils.isNum(id) ){
                 ArticleInfo articleInfo = articleService.getById(Long.parseLong(id));
                 modelAndView.addObject("article", articleInfo);
             }
@@ -51,7 +51,8 @@ public class ArticleController {
     }
 
     @RequestMapping("save-unpublished-blog")
-    public void savaUnpublishedArt(HttpSession session, HttpServletResponse response, ArticleInfo articleInfo, Boolean iscovered) throws Exception{
+    public void savaUnpublishedArt(HttpSession session, HttpServletResponse response,
+                                   ArticleInfo articleInfo, Boolean iscovered) throws Exception{
 
         ArticleSubmitInfo articleSubmitInfo = new ArticleSubmitInfo();
 
@@ -61,7 +62,7 @@ public class ArticleController {
         }
 
         //检查文章的title是否为空
-        if ( StringUtils.isBlank(articleInfo.getTitle()) ){
+        if ( MyStringUtils.isBlank(articleInfo.getTitle()) ){
             articleSubmitInfo.setSuccess(false);
             articleSubmitInfo.setMsg("文章标题不能为空");
             articleSubmitInfo.setShowcover(false);
@@ -94,7 +95,7 @@ public class ArticleController {
 
     @RequestMapping("getArticles")
     public void getArticles(Integer cateId,String pageNum  ,HttpServletResponse response) throws Exception{
-        if ( !StringUtils.isNum(pageNum) ){
+        if ( !MyStringUtils.isNum(pageNum) ){
             return;
         }
 
@@ -106,7 +107,7 @@ public class ArticleController {
 
     @RequestMapping("readArticle")
     public ModelAndView readArticle(String articleId, HttpSession session) throws Exception {
-        if ( !StringUtils.isNum(articleId) ){
+        if ( !MyStringUtils.isNum(articleId) ){
             return MvUtils.getIllgalRequestMv();
         }
 

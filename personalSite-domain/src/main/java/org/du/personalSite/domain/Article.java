@@ -2,7 +2,6 @@ package org.du.personalSite.domain;
 
 
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.du.personalSite.domain.utils.MarkdowmInter;
 import org.du.personalSite.domain.utils.Registry;
 
@@ -169,7 +168,6 @@ public class Article implements Serializable{
 
     public void generateContent(String originalContent){
         setOriginalContent(originalContent);
-        String escapedStr = StringEscapeUtils.escapeHtml4(originalContent);
-        setContent(Registry.query(MarkdowmInter.class).resolve(escapedStr));
+        setContent(Registry.query(MarkdowmInter.class).resolve(originalContent));
     }
 }

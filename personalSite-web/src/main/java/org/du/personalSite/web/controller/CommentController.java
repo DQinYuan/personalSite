@@ -11,7 +11,7 @@ import org.du.personalSite.web.utils.MvUtils;
 import org.du.personalSite.web.vo.response.CommentSubmitInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.CommentService;
-import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.vo.response.OriginalContentVo;
 import org.du.personalSite.web.vo.response.DeleteCommentInfo;
@@ -55,7 +55,7 @@ public class CommentController {
             return;
         }
 
-        if ( StringUtils.isBlank(commentInfo.getOriginalContent()) ){
+        if ( MyStringUtils.isBlank(commentInfo.getOriginalContent()) ){
             commentSubmitInfo.setIsSuccess(false);
             commentSubmitInfo.setErrorInfo("评论内容不能为空");
             AjaxUtils.reponseAjax(response, commentSubmitInfo);
@@ -83,13 +83,13 @@ public class CommentController {
     @RequestMapping("originalContent")
     public void getOriginalContent(String commentId, HttpServletResponse response) throws Exception{
 
-        if ( !StringUtils.isNum(commentId) ){
+        if ( !MyStringUtils.isNum(commentId) ){
             AjaxUtils.reponseAjax(response, OriginalContentVo.getErrorEntity("参数格式错误"));
             return;
         }
 
         String originalContent = commentService.getOriginalContent(Long.parseLong(commentId));
-        if ( StringUtils.isBlank(originalContent) ){
+        if ( MyStringUtils.isBlank(originalContent) ){
             AjaxUtils.reponseAjax(response, OriginalContentVo.getErrorEntity("该评论不存在"));
             return;
         }
@@ -103,14 +103,14 @@ public class CommentController {
     throws Exception{
         ModifyCommentInfo info = new ModifyCommentInfo();
 
-        if ( StringUtils.isBlank(commentId) || !StringUtils.isNum(commentId) ){
+        if ( MyStringUtils.isBlank(commentId) || !MyStringUtils.isNum(commentId) ){
             info.setIsSuccess(false);
             info.setErrorInfo("参数格式错误");
             AjaxUtils.reponseAjax(response, info);
             return;
         }
 
-        if ( StringUtils.isBlank(newOriginalContent) ){
+        if ( MyStringUtils.isBlank(newOriginalContent) ){
             info.setIsSuccess(false);
             info.setErrorInfo("评论内容不能为空");
             AjaxUtils.reponseAjax(response, info);
@@ -133,7 +133,7 @@ public class CommentController {
 
     @RequestMapping("commentsList")
     public ModelAndView commentsList(String id, HttpSession session){
-        if (!CheckUtils.checkLoginAndLevel(session) || !StringUtils.isNum(id)){
+        if (!CheckUtils.checkLoginAndLevel(session) || !MyStringUtils.isNum(id)){
             return MvUtils.getIllgalRequestMv();
         }
 
@@ -159,7 +159,7 @@ public class CommentController {
     public void deleteComment(String commentId, HttpSession session, HttpServletResponse response){
         DeleteCommentInfo info = new DeleteCommentInfo();
 
-        if ( !StringUtils.isNum(commentId) ){
+        if ( !MyStringUtils.isNum(commentId) ){
             info.setIsSuccess(false);
             info.setErrorInfo("非法请求");
             AjaxUtils.reponseAjax(response, info);

@@ -35,9 +35,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     CommentDao commentDao;
 
-    @Resource
-    CommentService commentService;
-
     /**
      *
      * @param articleInfo
@@ -67,7 +64,7 @@ public class ArticleServiceImpl implements ArticleService {
             oldArticle.generateContent(articleInfo.getOriginalContent());
             oldArticle.setCategory(articleInfo.getCategory());
             oldArticle.setArtAbstract(articleInfo.getArtAbstract());
-            article.setLatestModifTime(TimeUtils.getNowTime());
+            oldArticle.setLatestModifTime(TimeUtils.getNowTime());
             articleDao.update(oldArticle);
         }
 

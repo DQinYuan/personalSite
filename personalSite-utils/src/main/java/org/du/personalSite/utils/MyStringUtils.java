@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * @author sunxy 2016年1月20日 下午4:29:26	
  * @since 1.0
  */
-public class StringUtils {
+public class MyStringUtils {
 	
 	public static String cutIfExceed(String original, int length) {
 		if (Strings.isNullOrEmpty(original) || original.length() <= length) {
@@ -65,9 +65,17 @@ public class StringUtils {
 		return m.matches();
 	}
 
+	public static String joinAll(String[] target, String joinStr){
+		StringBuffer sb = new StringBuffer();
+		sb.append(target[0]);
+		for ( int i = 1; i < target.length; i++  ){
+			sb.append(joinStr + target[i]);
+		}
+		return sb.toString();
+	}
+
 	public static void main(String[] args) {
-		System.out.println(isNum(null));
-		System.out.println(isNum("3333"));
-		System.out.println(isNum("hhhhh"));
+		String[] test = {"a", "b", "c", "d"};
+		System.out.println(joinAll(test, "|"));
 	}
 }

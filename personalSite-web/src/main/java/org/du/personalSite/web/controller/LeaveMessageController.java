@@ -4,7 +4,7 @@ import org.du.personalSite.domain.exception.PersonalSiteException;
 import org.du.personalSite.domain.vo.LeaveMessageCustom;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.LeaveMessageService;
-import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.utils.CheckUtils;
 import org.du.personalSite.web.utils.Generator;
@@ -40,7 +40,7 @@ public class LeaveMessageController {
     @RequestMapping(value = "saveLeaveMessage", method = RequestMethod.POST)
     public void saveLeaveMessage(String originalContent, HttpServletResponse response
         , HttpServletRequest request, HttpSession session){
-        if (StringUtils.isBlank(originalContent)){
+        if (MyStringUtils.isBlank(originalContent)){
             AjaxUtils.reponseAjax(response, SaveLeaveMessagesInfo.getErrorEntity("留言不能为空"));
             return;
         }
@@ -69,7 +69,7 @@ public class LeaveMessageController {
 
     @RequestMapping(value = "originalContent", method = RequestMethod.POST)
     public void getOriginalContent(String leaveMessageId, HttpServletResponse response){
-        if ( !StringUtils.isNum(leaveMessageId) ){
+        if ( !MyStringUtils.isNum(leaveMessageId) ){
             AjaxUtils.reponseAjax(response, OriginalContentVo.getErrorEntity("参数格式不正确"));
             return;
         }
@@ -86,12 +86,12 @@ public class LeaveMessageController {
     @RequestMapping(value = "modifyLeaveMessage", method = RequestMethod.POST)
     public void modifyLeaveMessage(String leaveMessageId, String originalContent,
                                    HttpServletResponse response, HttpSession session){
-        if ( !StringUtils.isNum(leaveMessageId) ){
+        if ( !MyStringUtils.isNum(leaveMessageId) ){
             AjaxUtils.reponseAjax(response, ModifyLeaveMessageInfo.getErrorEntity("参数格式不正确"));
             return;
         }
 
-        if ( StringUtils.isBlank(originalContent) ){
+        if ( MyStringUtils.isBlank(originalContent) ){
             AjaxUtils.reponseAjax(response, ModifyLeaveMessageInfo.getErrorEntity("留言不能为空"));
             return;
         }
@@ -130,7 +130,7 @@ public class LeaveMessageController {
         if ( !CheckUtils.checkLoginAndLevel(session) ){
             return;
         }
-        if ( !StringUtils.isNum(leaveMessageId) ){
+        if ( !MyStringUtils.isNum(leaveMessageId) ){
             return;
         }
 

@@ -1,7 +1,7 @@
 package org.du.personalSite.web.utils;
 
 import org.du.personalSite.domain.vo.UserInfo;
-import org.du.personalSite.utils.StringUtils;
+import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.controller.WebConstant;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ public class Generator {
 
     public static String generateSessionNum(HttpSession session){
         String sessionNum = (String) session.getAttribute(WebConstant.SESSIONUM);
-        if ( StringUtils.isBlank(sessionNum) ){
+        if ( MyStringUtils.isBlank(sessionNum) ){
             String uuid = UUID.randomUUID().toString();
             session.setAttribute(WebConstant.SESSIONUM, uuid);
             return uuid;

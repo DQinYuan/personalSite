@@ -106,13 +106,13 @@ function getArticles(cateId) {
             if ( articles.length < 20 ){
                 pageFlatArr[String(cateId)] = true;
             }
+            cateAFlag = true;
         }
     )
 }
 
 function navActive(node, cateId) {
     $(".delActive").removeClass("active");
-    node.removeClass("cate-a");
 
     if ( cateId != -1 && (cateId == 0 || cateId == 1 || cateId == 2) ){
         $("#mainNavul li:eq(1)").addClass("active");
@@ -141,13 +141,18 @@ function autoClose() {
     }
 }
 
+var cateAFlag = true;
+
 $(".cate-a").click(function () {
+    if ( !cateAFlag ){
+        return;
+    }
+    cateAFlag = false;
     var cateId = $(this).attr("cateId");
     navActive($(this), cateId);
     removeAllCleared();
     pageArrInit();
     getArticles(cateId);
-    $(this).addClass("cate-a");
     currentCateId = cateId + "";
 });
 
