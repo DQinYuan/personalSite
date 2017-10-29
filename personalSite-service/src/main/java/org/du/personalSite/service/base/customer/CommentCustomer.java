@@ -29,7 +29,8 @@ public class CommentCustomer {
 
         CommentCustom commentCustom = simpleCustom(user, comment);
         if ( comment.getResponseCommentId() != null ){  //如果存在parentCustom
-            Comment parentComment = Registry.query(CommentDao.class).get(Comment.class, comment.getResponseCommentId());
+            Comment parentComment = Registry.query(CommentDao.class).get(Comment.class,
+                    comment.getResponseCommentId());
             CommentCustom parentCustom = simpleCustom(user, parentComment);
             commentCustom.setParentCustom(parentCustom);
         }

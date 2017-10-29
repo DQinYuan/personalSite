@@ -1,6 +1,5 @@
 package org.du.personalSite.domain.vo;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.du.personalSite.domain.Comment;
 import org.du.personalSite.domain.User;
 

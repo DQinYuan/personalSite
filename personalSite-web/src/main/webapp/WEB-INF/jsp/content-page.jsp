@@ -19,11 +19,10 @@
                <h1>${article.title}</h1>
            </div>
         </div>
-            <div class="panel-body">
-                   浏览次数：${article.browseTimes}<br/>
-                   最近修改时间：${article.latestModifTime}<br/><br/>
-                   ${article.content}
-            </div>
+        <div class="panel-body">
+               浏览次数：${article.browseTimes}<br/>
+               最近修改时间：${article.latestModifTime}<br/><br/>
+               ${article.content}
         </div>
     </div>
 
