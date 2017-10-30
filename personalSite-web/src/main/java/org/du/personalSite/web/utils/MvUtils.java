@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class MvUtils {
     public static ModelAndView getIllgalRequestMv(){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("error/illegalRequest");
+        mv.setViewName("/WEB-INF/jsp/error/illegalRequest.jsp");
         return mv;
     }
 }

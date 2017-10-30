@@ -10,7 +10,6 @@
     <title>500</title>
 </head>
 <body>
-    <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
     <img src="/images/error/500.png" class="img-responsive
        col-lg-4 col-lg-offset-3
        col-md-4 col-md-offset-3

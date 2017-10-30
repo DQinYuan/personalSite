@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
     public UserInfo verifyUser(UserInfo inUser) throws Exception {
         //vo转po
         User user = UserAssembler.getFromInfo(inUser);
-        user.generatePassword(user.getPassword());
 
         User currUser = userDao.getByNicknameAndPass(user);
         //如果该用户不存在或者该用户还处于未注册状态

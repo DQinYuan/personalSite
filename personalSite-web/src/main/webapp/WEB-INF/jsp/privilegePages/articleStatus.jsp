@@ -12,7 +12,6 @@
     <title>DQYuan's blog</title>
 </head>
 <body>
-    <jsp:include page="/WEB-INF/jsp/commons/top.jsp" />
     <table class="table cleared">
         <thead>
             <tr>

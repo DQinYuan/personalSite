@@ -1,44 +1,5 @@
 
 
-function submitLogin() {
-    $.post(
-        "/users/login.action",
-        {
-            nickname : $("#username-signin") .val().trim(),
-            password : $("#password-signin").val().trim(),
-            vcode: $("#verification-code-signin").val().trim()
-        },
-        function (loginInfo) {
-            var islogined = loginInfo.islogined;
-            if ( !islogined ){
-                showLoginMsg(loginInfo.errormsg);
-            } else {
-                $("#sign-in").on("hidden.bs.modal", function () {
-                    $("#signup-nav").remove();
-                    $("#login-nav").remove();
-                    $("#sign-in").remove();
-                    $("#sign-up").remove();
-                    $("#signup-in").append($("<li><a>欢迎" + loginInfo.nickname +" 光临本站</a></li>"));
-                })
-                $("#sign-in").modal('hide');
-            }
-        }
-    )
-}
-
-function checkLogin() {
-    var nickname = $("#username-signin") .val().trim();
-    var password = $("#password-signin").val().trim();
-    var vcode = $("#verification-code-signin").val().trim();
-    var pattern = new RegExp("[~'!@#$%^&*()-+_=:\<\>]");
-    if ( nickname == "" || password == "" || vcode == "" ){
-        return "字段不能为空";
-    }
-    if ( pattern.test(nickname) || pattern.test(password) || pattern.test(vcode) ){
-        return "字段中不能含有特殊字符";
-    }
-    return "";
-}
 
 function showModalMsg(node, msg){
     node.append($(" <div class='alert alert-error'> <a class='close' data-dismiss='alert'>×</a> <strong style='color: red' >"
@@ -51,14 +12,6 @@ function showLoginMsg(msg) {
     $("#loginimg").attr("src", $("#loginimg").attr('src') + '?' +timestamp);
 }
 
-$("#loginbutton").click(function () {
-    var checkResult = checkLogin();
-    if ( !(checkResult == "") ){
-        showLoginMsg(checkResult)
-    } else {
-        submitLogin();
-    }
-});
 
 $("#loginimg").click(function () {
     var timestamp = new Date().getTime();
@@ -282,35 +235,4 @@ $('#submitModLeaveMessage').click(function () {
             }
         }
     );
-});
-
-$(function () {
-    $.post(
-        "/users/login.action",
-        {
-            iniPage : true
-        },
-        function (loginInfo) {
-            var islogined = loginInfo.islogined;
-            if ( islogined ){
-                $("#signup-nav").remove();
-                $("#login-nav").remove();
-                $("#sign-in").remove();
-                $("#sign-up").remove();
-                $("#signup-in").append($("<li><a>欢迎" + loginInfo.nickname +" 光临本站</a></li>"));
-            }
-        }
-    );
-    $(window).scroll(function() {
-        if ( currentCateId == "-2" ){
-            return;
-        }
-        if (Math.ceil($(document).scrollTop()) >= $(document).height() - $(window).height()) {
-            if ( pageFlatArr[currentCateId] ){
-                return;
-            }
-            $("body").append($("<div style='text-align:center;' class='loadingStr'>正在加载...</div>"));
-            getArticles(currentCateId);
-        }
-    });
 });

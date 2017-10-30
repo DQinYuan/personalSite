@@ -2,22 +2,24 @@ package org.du.personalSite.web.controller;
 
 import org.du.personalSite.domain.DomainConstant;
 import org.du.personalSite.utils.TimeUtils;
+import org.du.personalSite.web.vo.user.request.LoginCommit;
 import org.du.personalSite.web.vo.response.LoginInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.UserService;
-import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.imgserver.AuthImg;
-import org.du.personalSite.web.utils.AjaxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -37,9 +39,17 @@ public class UserController {
 
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public void userLogin(UserInfo user, String vcode, HttpSession session, HttpServletRequest request, HttpServletResponse response, Boolean iniPage) throws Exception{
-        //返回json数据
+    public @ResponseBody LoginInfo userLogin(@Validated @RequestBody LoginCommit commit,
+                                             BindingResult aresult, HttpSession session
+                                    , HttpServletRequest request) throws Exception{
         LoginInfo loginInfo = new LoginInfo();
+          /*校验代码*/
+        if ( aresult.hasErrors() ){
+            String msg = aresult.getAllErrors().get(0).getDefaultMessage();
+            loginInfo.setIslogined(false);
+            loginInfo.setErrormsg(msg);
+            return loginInfo;
+        }
 
         Boolean islogined = (Boolean) session.getAttribute(WebConstant.ISLOGINED);
 
@@ -48,33 +58,26 @@ public class UserController {
             String nickname = (String) session.getAttribute(WebConstant.NICKNAME);
             loginInfo.setNickname(nickname);
             loginInfo.setIslogined(islogined);
-            AjaxUtils.reponseAjax(response, loginInfo);
-            return;
+            return loginInfo;
         }
-        if ( iniPage != null && iniPage == true ){
-            return;
+        if ( commit.getIniPage() != null && commit.getIniPage() == true ){
+            loginInfo.setIslogined(false);
+            loginInfo.setNickname(request.getRemoteAddr());
+            return loginInfo;
         }
 
         //验证码不正确
-        if ( !vcode.equals(session.getAttribute(AuthImg.RAND)) ){
+        if ( !commit.getVcode().equals(session.getAttribute(AuthImg.RAND)) ){
             session.setAttribute(WebConstant.ISLOGINED, false);
             loginInfo.setIslogined(false);
             loginInfo.setErrormsg("验证码错误");
-            AjaxUtils.reponseAjax(response, loginInfo);
             logger.info("ip地址" + request.getRemoteAddr() + "验证码错误");
-            return;
+            return loginInfo;
         }
 
-        //用户名或者密码不能为空
-        if ( MyStringUtils.isBlank(user.getNickname()) || MyStringUtils.isBlank(user.getPassword()) ){
-            session.setAttribute(WebConstant.ISLOGINED, false);
-            loginInfo.setIslogined(false);
-            loginInfo.setErrormsg("用户名或者密码不能为空");
-            AjaxUtils.reponseAjax(response, loginInfo);
-            logger.info("ip地址" + request.getRemoteAddr() + "用户名或者密码为空");
-            return;
-        }
-
+        UserInfo user = new UserInfo();
+        user.setNickname(commit.getNickname());
+        user.setPassword(commit.getPassword());
         user.setIp(request.getRemoteAddr());
         user.setLatestLoginTime(TimeUtils.getNowTime());
         int result;
@@ -100,6 +103,6 @@ public class UserController {
             session.setAttribute(WebConstant.USER, outUser);
             logger.info("用户" + user.getNickname() + "登录成功");
         }
-        AjaxUtils.reponseAjax(response, loginInfo);
+        return loginInfo;
     }
 }

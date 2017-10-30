@@ -1,6 +1,7 @@
 package org.du.personalSite.web.controller;
 
 import org.du.personalSite.domain.Article;
+import org.du.personalSite.domain.Comment;
 import org.du.personalSite.domain.exception.PersonalSiteException;
 import org.du.personalSite.domain.vo.CommentCustom;
 import org.du.personalSite.domain.vo.CommentInfo;
@@ -8,19 +9,23 @@ import org.du.personalSite.service.ArticleService;
 import org.du.personalSite.web.utils.CheckUtils;
 import org.du.personalSite.web.utils.Generator;
 import org.du.personalSite.web.utils.MvUtils;
-import org.du.personalSite.web.vo.response.CommentSubmitInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.CommentService;
 import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
+import org.du.personalSite.web.vo.ConventionLogic;
+import org.du.personalSite.web.vo.comment.request.CommentCommit;
+import org.du.personalSite.web.vo.comment.request.ModifyCommentCommit;
+import org.du.personalSite.web.vo.comment.response.CommentSubmitInfo;
+import org.du.personalSite.web.vo.comment.response.ModifyCommentInfo;
 import org.du.personalSite.web.vo.response.OriginalContentVo;
 import org.du.personalSite.web.vo.response.DeleteCommentInfo;
-import org.du.personalSite.web.vo.response.ModifyCommentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -43,23 +48,31 @@ public class CommentController {
     @Resource
     ArticleService articleService;
 
-    @RequestMapping(value = "saveComments", method = RequestMethod.POST)
-    public void saveComments(CommentInfo commentInfo,
-                             HttpSession session, HttpServletResponse response, HttpServletRequest request) throws Exception{
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody CommentSubmitInfo saveComments(@Validated @RequestBody CommentCommit commit,
+                                                        BindingResult result,
+                                   HttpSession session, HttpServletRequest request) throws Exception{
         CommentSubmitInfo commentSubmitInfo = new CommentSubmitInfo();
 
-        if ( commentInfo.getArticleId() == null ){
+        /*校验代码*/
+        if ( result.hasErrors() ){
+            String msg = result.getAllErrors().get(0).getDefaultMessage();
             commentSubmitInfo.setIsSuccess(false);
-            commentSubmitInfo.setErrorInfo("缺少请求参数，无法评论");
-            AjaxUtils.reponseAjax(response, commentSubmitInfo);
-            return;
+            commentSubmitInfo.setErrorInfo(msg);
+            return commentSubmitInfo;
         }
 
-        if ( MyStringUtils.isBlank(commentInfo.getOriginalContent()) ){
+        if ( !MyStringUtils.isNum(commit.getArticleId()) ){
             commentSubmitInfo.setIsSuccess(false);
-            commentSubmitInfo.setErrorInfo("评论内容不能为空");
-            AjaxUtils.reponseAjax(response, commentSubmitInfo);
-            return;
+            commentSubmitInfo.setErrorInfo("该文章不存在");
+            return commentSubmitInfo;
+        }
+
+        if ( commit.getResponseCommentId() != null &&
+                !MyStringUtils.isNum(commit.getResponseCommentId()) ){
+            commentSubmitInfo.setIsSuccess(false);
+            commentSubmitInfo.setErrorInfo("参数格式不对");
+            return commentSubmitInfo;
         }
 
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
@@ -71,13 +84,20 @@ public class CommentController {
             session.setAttribute(WebConstant.NICKNAME, userInfo.getNickname());
         }
 
-        commentService.saveComment(commentInfo, userInfo.getId(), request.getRemoteAddr(),
-                Generator.generateSessionNum(session));
+        CommentInfo commentInfo = new CommentInfo();
+        commentInfo.setArticleId(Long.parseLong(commit.getArticleId()));
+        commentInfo.setOriginalContent(commit.getOriginalContent());
+        commentInfo.setResponseCommentId(ConventionLogic.str2Long(commit.getResponseCommentId()));
+
+        Comment dbInfo =  commentService.saveComment(commentInfo, userInfo.getId(),
+                request.getRemoteAddr(), Generator.generateSessionNum(session));
 
         logger.info("用户" + userInfo.getNickname() + "评论文章" + commentInfo.getArticleId() + "成功");
 
         commentSubmitInfo.setIsSuccess(true);
-        AjaxUtils.reponseAjax(response, commentSubmitInfo);
+        commentSubmitInfo.setContent(dbInfo.getContent());
+        commentSubmitInfo.setCommentId(dbInfo.getId());
+        return commentSubmitInfo;
     }
 
     @RequestMapping("originalContent")
@@ -97,36 +117,40 @@ public class CommentController {
         AjaxUtils.reponseAjax(response, OriginalContentVo.getSuccessEntity(originalContent));
     }
 
-    @RequestMapping(value = "modifyComments", method = RequestMethod.POST)
-    public void modifyComments(String commentId, String newOriginalContent,
-                               HttpServletResponse response, HttpSession session)
+    @RequestMapping(value = "/{commentId}", method = RequestMethod.PUT)
+    public @ResponseBody
+    ModifyCommentInfo modifyComments(@PathVariable("commentId") String commentId
+            , @Validated @RequestBody ModifyCommentCommit commit , BindingResult result
+                                     , HttpSession session)
     throws Exception{
         ModifyCommentInfo info = new ModifyCommentInfo();
 
-        if ( MyStringUtils.isBlank(commentId) || !MyStringUtils.isNum(commentId) ){
+        /*校验代码*/
+        if ( result.hasErrors() ){
+            String msg = result.getAllErrors().get(0).getDefaultMessage();
             info.setIsSuccess(false);
-            info.setErrorInfo("参数格式错误");
-            AjaxUtils.reponseAjax(response, info);
-            return;
+            info.setErrorInfo(msg);
+            return info;
         }
 
-        if ( MyStringUtils.isBlank(newOriginalContent) ){
+        if ( !MyStringUtils.isNum(commentId) ){
             info.setIsSuccess(false);
-            info.setErrorInfo("评论内容不能为空");
-            AjaxUtils.reponseAjax(response, info);
-            return;
+            info.setErrorInfo("该评论不存在");
+            return info;
         }
 
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
 
         try {
-            commentService.modifyComment(userInfo, Long.parseLong(commentId), newOriginalContent);
+            String content = commentService.modifyComment(userInfo, Long.parseLong(commentId),
+                    commit.getNewOriginalContent());
             info.setIsSuccess(true);
-            AjaxUtils.reponseAjax(response, info);
+            info.setContent(content);
+            return info;
         } catch (PersonalSiteException e){
             info.setIsSuccess(false);
             info.setErrorInfo(e.getMessage());
-            AjaxUtils.reponseAjax(response, info);
+            return info;
         }
 
     }
@@ -151,7 +175,7 @@ public class CommentController {
         mv.addObject("commentCustoms", commentCustoms);
         mv.addObject("title", article.getTitle());
         mv.addObject("article", article);
-        mv.setViewName("privilegePages/commentsList");
+        mv.setViewName("/WEB-INF/jsp/privilegePages/commentsList.jsp");
         return mv;
     }
 

@@ -1,4 +1,4 @@
-package org.du.personalSite.web.vo.response.leavemessage;
+package org.du.personalSite.web.vo.leavemessage.response;
 
 import org.du.personalSite.domain.vo.LeaveMessageCustom;
 
@@ -7,8 +7,25 @@ import org.du.personalSite.domain.vo.LeaveMessageCustom;
  */
 public class SaveLeaveMessagesInfo {
     Boolean isSuccess;
+    String content;
+    Long leaveMessageId;
     String errorInfo;
-    LeaveMessageCustom custom;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Long getLeaveMessageId() {
+        return leaveMessageId;
+    }
+
+    public void setLeaveMessageId(Long leaveMessageId) {
+        this.leaveMessageId = leaveMessageId;
+    }
 
     public Boolean getIsSuccess() {
         return isSuccess;
@@ -26,14 +43,6 @@ public class SaveLeaveMessagesInfo {
         this.errorInfo = errorInfo;
     }
 
-    public LeaveMessageCustom getCustom() {
-        return custom;
-    }
-
-    public void setCustom(LeaveMessageCustom custom) {
-        this.custom = custom;
-    }
-
     public static SaveLeaveMessagesInfo getErrorEntity(String errorInfo){
         SaveLeaveMessagesInfo info = new SaveLeaveMessagesInfo();
         info.setIsSuccess(false);
@@ -44,7 +53,8 @@ public class SaveLeaveMessagesInfo {
     public static SaveLeaveMessagesInfo getSuccessEntity(LeaveMessageCustom custom){
         SaveLeaveMessagesInfo info = new SaveLeaveMessagesInfo();
         info.setIsSuccess(true);
-        info.setCustom(custom);
+        info.setContent(custom.getLeaveMessage().getContent());
+        info.setLeaveMessageId(custom.getLeaveMessage().getId());
         return info;
     }
 }

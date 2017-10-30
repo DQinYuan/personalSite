@@ -161,6 +161,17 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Transactional
+    public List<ArticleInfo> getAllArticles(Integer cateId) throws Exception {
+        if ( cateId == null || cateId == -1 ){
+            List<Article> articles = articleDao.findByIsPublished(true);
+            return ArticleAssembler.articlesToInfo(articles);
+        }
+
+        List<Article> articles = articleDao.getByCateAndIsPublished(cateId , true);
+        return ArticleAssembler.articlesToInfo(articles);
+    }
+
+    @Transactional
     public ArticleInfo getById(long id) {
         Article art = articleDao.get(Article.class, id);
         if ( art == null ){

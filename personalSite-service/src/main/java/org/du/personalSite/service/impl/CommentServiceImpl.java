@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     ArticleService articleService;
 
     @Transactional
-    public void saveComment(CommentInfo commentInfo, Long userId, String ip, String session) throws Exception {
+    public Comment saveComment(CommentInfo commentInfo, Long userId, String ip, String session) throws Exception {
 
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentInfo, comment);
@@ -61,6 +61,10 @@ public class CommentServiceImpl implements CommentService {
 
         commentDao.save(comment);
 
+        Comment retInfo = new Comment();
+        BeanUtils.copyProperties(comment, retInfo);
+
+        return retInfo;
     }
 
     @Transactional(readOnly = true)
@@ -74,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public void modifyComment(User user ,long commentId, String newOriginalContent) throws Exception {
+    public String modifyComment(User user ,long commentId, String newOriginalContent) throws Exception {
         Comment comment = commentDao.get(Comment.class, commentId);
         if ( comment == null ){
             throw new PersonalSiteException("该评论不存在");
@@ -87,6 +91,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setLatestModifTime(TimeUtils.getNowTime());
 
         commentDao.update(comment);
+
+        return comment.getContent();
     }
 
     @Transactional(readOnly = true)

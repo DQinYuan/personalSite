@@ -9,14 +9,20 @@ import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.utils.CheckUtils;
 import org.du.personalSite.web.utils.Generator;
 import org.du.personalSite.web.utils.MvUtils;
+import org.du.personalSite.web.vo.leavemessage.request.LeaveMessageCommit;
+import org.du.personalSite.web.vo.leavemessage.response.LeaveMessageVo;
 import org.du.personalSite.web.vo.response.OriginalContentVo;
 import org.du.personalSite.web.vo.response.leavemessage.ModifyLeaveMessageInfo;
-import org.du.personalSite.web.vo.response.leavemessage.SaveLeaveMessagesInfo;
+import org.du.personalSite.web.vo.leavemessage.response.SaveLeaveMessagesInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -29,7 +35,7 @@ import java.util.List;
  * Created by 燃烧杯 on 2017/7/12.
  */
 @Controller
-@RequestMapping("leaveMessages")
+@RequestMapping("leavemessages")
 public class LeaveMessageController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -37,12 +43,15 @@ public class LeaveMessageController {
     @Resource
     LeaveMessageService leaveMessageService;
 
-    @RequestMapping(value = "saveLeaveMessage", method = RequestMethod.POST)
-    public void saveLeaveMessage(String originalContent, HttpServletResponse response
-        , HttpServletRequest request, HttpSession session){
-        if (MyStringUtils.isBlank(originalContent)){
-            AjaxUtils.reponseAjax(response, SaveLeaveMessagesInfo.getErrorEntity("留言不能为空"));
-            return;
+    @RequestMapping(method = RequestMethod.POST)
+    public @ResponseBody SaveLeaveMessagesInfo saveLeaveMessage(
+            @Validated @RequestBody LeaveMessageCommit commit,
+            BindingResult result, HttpServletResponse response
+            , HttpServletRequest request, HttpSession session){
+            /*校验代码*/
+        if ( result.hasErrors() ){
+            String msg = result.getAllErrors().get(0).getDefaultMessage();
+            return SaveLeaveMessagesInfo.getErrorEntity(msg);
         }
 
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
@@ -53,18 +62,19 @@ public class LeaveMessageController {
         }
 
 
-        LeaveMessageCustom custom = leaveMessageService.saveLeaveMessage(originalContent,
+        LeaveMessageCustom custom = leaveMessageService.saveLeaveMessage(commit.getOriginalContent(),
                 request.getRemoteAddr(), Generator.generateSessionNum(session), userInfo);
 
         logger.info("用户" + userInfo.getNickname() + "留言成功");
-        AjaxUtils.reponseAjax(response, SaveLeaveMessagesInfo.getSuccessEntity(custom));
+        return SaveLeaveMessagesInfo.getSuccessEntity(custom);
     }
 
-    @RequestMapping(value = "getAllLeaveMessages", method = RequestMethod.POST)
-    public void getAllLeaveMessages(HttpServletResponse response, HttpSession session) {
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody List<LeaveMessageVo> getAllLeaveMessages
+            (HttpSession session) {
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
         List<LeaveMessageCustom> customs = leaveMessageService.getAllLeaveMessageCustoms(userInfo);
-        AjaxUtils.reponseAjax(response, customs);
+        return LeaveMessageVo.customs2vos(customs);
     }
 
     @RequestMapping(value = "originalContent", method = RequestMethod.POST)
@@ -119,7 +129,7 @@ public class LeaveMessageController {
 
         ModelAndView mv = new ModelAndView();
         mv.addObject("leaveMessageCustoms", customs);
-        mv.setViewName("privilegePages/leaveMessagesList");
+        mv.setViewName("/WEB-INF/jsp/privilegePages/leaveMessagesList.jsp");
 
         return mv;
     }

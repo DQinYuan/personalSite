@@ -1,6 +1,8 @@
 package org.du.personalSite.web.controller;
 
 import org.du.personalSite.domain.vo.ArticleInfo;
+import org.du.personalSite.web.vo.article.response.ArticleVo;
+import org.du.personalSite.web.vo.comment.response.CommentVo;
 import org.du.personalSite.web.vo.response.ArticleSubmitInfo;
 import org.du.personalSite.domain.vo.UserInfo;
 import org.du.personalSite.service.ArticleService;
@@ -8,15 +10,20 @@ import org.du.personalSite.utils.MyStringUtils;
 import org.du.personalSite.web.utils.AjaxUtils;
 import org.du.personalSite.web.utils.CheckUtils;
 import org.du.personalSite.web.utils.MvUtils;
+import org.du.personalSite.web.vo.article.response.ArtTitleAndAbs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,16 +42,17 @@ public class ArticleController {
 
     @RequestMapping("write-blogs")
     public ModelAndView writeBlog(HttpSession session, String id) throws Exception{
-        ModelAndView modelAndView = new ModelAndView();
+
         if ( !CheckUtils.checkLoginAndLevel(session) ){
-            modelAndView.setViewName("index");
-        } else {
-            if ( MyStringUtils.isNotBlank(id) && MyStringUtils.isNum(id) ){
-                ArticleInfo articleInfo = articleService.getById(Long.parseLong(id));
-                modelAndView.addObject("article", articleInfo);
-            }
-            modelAndView.setViewName("/privilegePages/write-blogs");
+            return MvUtils.getIllgalRequestMv();
         }
+        ModelAndView modelAndView = new ModelAndView();
+        if ( MyStringUtils.isNotBlank(id) && MyStringUtils.isNum(id) ){
+            ArticleInfo articleInfo = articleService.getById(Long.parseLong(id));
+            modelAndView.addObject("article", articleInfo);
+        }
+        modelAndView.setViewName("/WEB-INF/jsp/privilegePages/write-blogs.jsp");
+
 
         logger.info("用户" + session.getAttribute("nickname") +"进入写作系统");
         return modelAndView;
@@ -80,59 +88,69 @@ public class ArticleController {
             articleSubmitInfo.setSuccess(true);
             articleSubmitInfo.setShowcover(false);
 
-            logger.info("用户" + session.getAttribute("nickname") +"成功保存Article" + articleInfo.getTitle());
+            logger.info("用户" + session.getAttribute("nickname") +"成功保存Article"
+                    + articleInfo.getTitle());
 
             AjaxUtils.reponseAjax(response, articleSubmitInfo);
         } else {
             articleSubmitInfo.setSuccess(false);
             articleSubmitInfo.setShowcover(true);
 
-            logger.info("用户" + session.getAttribute("nickname") +"申请覆盖Article" + articleInfo.getTitle());
+            logger.info("用户" + session.getAttribute("nickname") +"申请覆盖Article"
+                    + articleInfo.getTitle());
 
             AjaxUtils.reponseAjax(response, articleSubmitInfo);
         }
     }
 
-    @RequestMapping("getArticles")
-    public void getArticles(Integer cateId,String pageNum  ,HttpServletResponse response) throws Exception{
-        if ( !MyStringUtils.isNum(pageNum) ){
-            return;
+    @RequestMapping(value = "/{cateId}/{pageNum}", method = RequestMethod.GET)
+    public @ResponseBody List<ArtTitleAndAbs> getArticles(@PathVariable("cateId") String cateId,
+                                     @PathVariable("pageNum") String pageNum)
+            throws Exception{
+        if ( !MyStringUtils.isNum(pageNum) || !MyStringUtils.isNum(cateId) ){
+            return new ArrayList<ArtTitleAndAbs>();
         }
 
-        List<ArticleInfo> artList = articleService.getArticlesByPage(cateId, Integer.parseInt(pageNum));
+        List<ArticleInfo> artList = articleService.getAllArticles(Integer.parseInt(cateId));
 
-        AjaxUtils.reponseAjax(response, artList);
-
+       return ArtTitleAndAbs.infos2its(artList);
     }
 
-    @RequestMapping("readArticle")
-    public ModelAndView readArticle(String articleId, HttpSession session) throws Exception {
+    @RequestMapping(value = "/{articleId}", method = RequestMethod.GET)
+    public @ResponseBody
+    ArticleVo readArticle(@PathVariable("articleId") String articleId
+            , HttpSession session) throws Exception {
         if ( !MyStringUtils.isNum(articleId) ){
-            return MvUtils.getIllgalRequestMv();
+            ArticleVo dummyVo = new ArticleVo();
+            dummyVo.setBrowseTimes(0L);
+            dummyVo.setLatestModifTime("0000-00-00");
+            dummyVo.setTitle("该文章尚未发表");
+            dummyVo.setContent("该文章尚未发表");
+            dummyVo.setComments(new ArrayList<CommentVo>());
+            return dummyVo;
         }
 
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
         ArticleInfo articleInfo = articleService.readArticle(userInfo, articleId);
-        ModelAndView mv = new ModelAndView();
-        mv.addObject("article", articleInfo);
-        mv.setViewName("content-page");
-        return mv;
+        return ArticleVo.info2Vo(articleInfo);
     }
 
     @RequestMapping("articleList")
     public ModelAndView articleList(HttpSession session) throws Exception{
         UserInfo userInfo = (UserInfo) session.getAttribute(WebConstant.USER);
-        ModelAndView mv = new ModelAndView();
+
         if ( !CheckUtils.checkLoginAndLevel(session) ){
-            mv.setViewName("index");
-        } else {
-            List<ArticleInfo> articleInfos = articleService.getAllArticlesByUser(userInfo);
-
-            //数据填充
-            mv.addObject("articleInfos", articleInfos);
-
-            mv.setViewName("privilegePages/articleStatus");
+            return MvUtils.getIllgalRequestMv();
         }
+
+        ModelAndView mv = new ModelAndView();
+        List<ArticleInfo> articleInfos = articleService.getAllArticlesByUser(userInfo);
+
+        //数据填充
+        mv.addObject("articleInfos", articleInfos);
+
+        mv.setViewName("/WEB-INF/jsp/privilegePages/articleStatus.jsp");
+
 
         return mv;
     }

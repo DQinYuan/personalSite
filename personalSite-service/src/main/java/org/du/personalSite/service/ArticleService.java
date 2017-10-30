@@ -39,6 +39,7 @@ public interface ArticleService {
 
     List<ArticleInfo> getArticlesByPage(Integer cateId, int pageNum);
 
+    List<ArticleInfo> getAllArticles(Integer cateId) throws Exception;
 
     ArticleInfo getById(long id);
 }

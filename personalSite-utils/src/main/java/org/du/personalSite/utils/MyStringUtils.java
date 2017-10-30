@@ -60,7 +60,7 @@ public class MyStringUtils {
 		if ( isBlank(target) ){
 			return false;
 		}
-		String regex = "^\\d+$";
+		String regex = "^-?\\d+$";
 		Matcher m=Pattern.compile(regex).matcher(target);
 		return m.matches();
 	}

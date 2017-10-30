@@ -34,7 +34,7 @@
     $('.deleteLeaveMessage').click(function () {
         var leaveMessaageId = $(this).attr('leaveMessageId');
         $.post(
-            '/leaveMessages/delete.action',
+            '/leavemessages/delete.action',
            {
                 leaveMessageId: leaveMessaageId
             },

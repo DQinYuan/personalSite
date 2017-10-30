@@ -1,10 +1,12 @@
-package org.du.personalSite.web.vo.response;
+package org.du.personalSite.web.vo.comment.response;
 
 /**
  * Created by 燃烧杯 on 2017/7/6.
  */
 public class ModifyCommentInfo {
     Boolean isSuccess;
+
+    String content;
 
     String errorInfo;
 
@@ -14,6 +16,14 @@ public class ModifyCommentInfo {
 
     public void setIsSuccess(Boolean success) {
         isSuccess = success;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getErrorInfo() {
