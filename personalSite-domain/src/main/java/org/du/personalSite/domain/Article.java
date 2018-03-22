@@ -170,4 +170,15 @@ public class Article implements Serializable{
         setOriginalContent(originalContent);
         setContent(Registry.query(MarkdowmInter.class).resolve(originalContent));
     }
+
+    public Article generateCacheObj(){
+        Article cache = new Article();
+        cache.setTitle(this.getTitle());
+        cache.setArtAbstract(this.getArtAbstract());
+        cache.setCategory(this.getCategory());
+        cache.setLatestModifTime(this.getLatestModifTime());
+        cache.setIsPublished(this.getIsPublished());
+        cache.setId(this.getId());
+        return cache;
+    }
 }

@@ -4,6 +4,7 @@ import org.du.personalSite.domain.vo.ArticleInfo;
 import org.du.personalSite.web.vo.comment.response.CommentVo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,12 +20,20 @@ public class ArticleVo {
     public static ArticleVo info2Vo(ArticleInfo info){
         ArticleVo vo = new ArticleVo();
         vo.setBrowseTimes(info.getBrowseTimes());
-        vo.setLatestModifTime(
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(info.getLatestModifTime())
-        );
+        if ( info.getLatestModifTime() != null ){
+            vo.setLatestModifTime(
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(info.getLatestModifTime())
+            );
+        }
         vo.setTitle(info.getTitle());
         vo.setContent(info.getContent());
-        vo.setComments(CommentVo.customs2vos(info.getCommentCustoms(), info.getOwner().getId()));
+        Long ownerId = null;
+        if ( info.getOwner() != null && info.getCommentCustoms() != null){
+            vo.setComments(CommentVo.customs2vos(info.getCommentCustoms(), info.getOwner().getId()));
+        } else {
+            vo.setComments(new ArrayList<CommentVo>());
+        }
+
         return vo;
     }
 

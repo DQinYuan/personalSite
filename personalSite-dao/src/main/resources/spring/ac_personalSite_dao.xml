@@ -17,7 +17,7 @@
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
                 <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/personalSite?characterEncoding=utf-8"/>
                 <property name="username" value="root"/>
-                <property name="password" value="123456"/>
+                <property name="password" value="3905084"/>
                 <property name="connectionTestQuery" value="select 1 from dual"/>
                 <property name="connectionTimeout" value="15000"/>
                 <property name="idleTimeout" value="600000"/>

@@ -16,20 +16,9 @@ import java.util.List;
 public interface ArticleService {
     Boolean saveUnpublishedArt(ArticleInfo articleInfo, Boolean iscovered) throws Exception;
 
-    /**
-     * 获得所有已发表文章
-     * cateId为null或者-1时返回所有已发表文章
-     * @param cateId
-     * @return
-     * @throws Exception
-     */
-    List<ArticleInfo> getArticles(Integer cateId) throws Exception;
-
     ArticleInfo readArticle(User user , String articleId) throws Exception;
 
     List<ArticleInfo> getAllArticlesByUser(UserInfo userInfo) throws Exception;
-
-    ArticleInfo getByTitle(String title);
 
     boolean publishToggle(String articleId) throws Exception;
 

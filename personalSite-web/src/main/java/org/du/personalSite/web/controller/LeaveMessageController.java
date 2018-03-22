@@ -63,7 +63,7 @@ public class LeaveMessageController {
 
 
         LeaveMessageCustom custom = leaveMessageService.saveLeaveMessage(commit.getOriginalContent(),
-                request.getRemoteAddr(), Generator.generateSessionNum(session), userInfo);
+                request.getHeader("X-Real-IP"), Generator.generateSessionNum(session), userInfo);
 
         logger.info("用户" + userInfo.getNickname() + "留言成功");
         return SaveLeaveMessagesInfo.getSuccessEntity(custom);

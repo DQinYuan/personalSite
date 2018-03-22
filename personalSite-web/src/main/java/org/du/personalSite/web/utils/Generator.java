@@ -27,7 +27,7 @@ public class Generator {
     //以ip地址为nickname，uuid会话编号为其他信息生成一个虚拟用户
     public static UserInfo generateUser(HttpServletRequest request, HttpSession session){
         UserInfo userInfo = new UserInfo();
-        userInfo.setNickname(request.getRemoteAddr());
+        userInfo.setNickname(request.getHeader("X-Real-IP"));
         userInfo.setOtherPersonalInformation(generateSessionNum(session));
         userInfo.setRegistered(false);
         return userInfo;

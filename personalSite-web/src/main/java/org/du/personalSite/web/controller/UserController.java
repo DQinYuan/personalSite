@@ -62,7 +62,7 @@ public class UserController {
         }
         if ( commit.getIniPage() != null && commit.getIniPage() == true ){
             loginInfo.setIslogined(false);
-            loginInfo.setNickname(request.getRemoteAddr());
+            loginInfo.setNickname(request.getHeader("X-Real-IP"));
             return loginInfo;
         }
 

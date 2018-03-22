@@ -12,7 +12,7 @@ public class WelcomeController {
     @RequestMapping(value={"/","/index"})
     public ModelAndView userIndex(){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("/static/user/index.html");
+        mv.setViewName("/static/index.html");
         return mv;
     }
 }

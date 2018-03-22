@@ -72,17 +72,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Transactional
-    public List<ArticleInfo> getArticles(Integer cateId) throws Exception {
-        if ( cateId == null || cateId == -1 ){
-            List<Article> artList = articleDao.findByIsPublished(true);
-            return ArticleAssembler.articlesToInfo(artList);
-        }
-
-        List<Article> artList = articleDao.getByCateAndIsPublished(cateId, true);
-        return ArticleAssembler.articlesToInfo(artList);
-    }
-
-    @Transactional
     public ArticleInfo readArticle(User user , String articleId) throws Exception {
         Article art = articleDao.get(Article.class, Long.parseLong(articleId));
 
@@ -124,19 +113,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Transactional
-    public ArticleInfo getByTitle(String title) {
-        Article article = articleDao.getByTitle(title);
-
-        if ( article == null ){
-            return null;
-        }
-
-        ArticleInfo articleInfo = new ArticleInfo();
-        BeanUtils.copyProperties(article, articleInfo);
-        return articleInfo;
-    }
-
-    @Transactional
     public boolean publishToggle(String articleId) throws Exception {
         Article article = articleDao.get(Article.class, Long.parseLong(articleId));
         if ( article == null ){
@@ -163,7 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public List<ArticleInfo> getAllArticles(Integer cateId) throws Exception {
         if ( cateId == null || cateId == -1 ){
-            List<Article> articles = articleDao.findByIsPublished(true);
+            List<Article> articles = articleDao.getPublishedCache();
             return ArticleAssembler.articlesToInfo(articles);
         }
 

@@ -90,7 +90,7 @@ public class CommentController {
         commentInfo.setResponseCommentId(ConventionLogic.str2Long(commit.getResponseCommentId()));
 
         Comment dbInfo =  commentService.saveComment(commentInfo, userInfo.getId(),
-                request.getRemoteAddr(), Generator.generateSessionNum(session));
+                request.getHeader("X-Real-IP"), Generator.generateSessionNum(session));
 
         logger.info("用户" + userInfo.getNickname() + "评论文章" + commentInfo.getArticleId() + "成功");
 

@@ -4,7 +4,9 @@ import org.du.personalSite.dao.base.BaseDao;
 import org.du.personalSite.domain.Article;
 import org.du.personalSite.domain.User;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by duqinyuan on 2017/5/6.
@@ -29,4 +31,8 @@ public interface ArticleDao extends BaseDao<Article> {
     List<Article> getByPageAndIsPublished(int pageNum, boolean isPublished);
 
     List<Article> getByPageAndCateAndIsPublished(int pageNum,int cateId ,boolean isPublished);
+
+    List<Article> getPublishedCache();
+
+
 }

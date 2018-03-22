@@ -19,7 +19,7 @@ public class AuthImg extends HttpServlet
 
 	private final Font mFont =
 		new Font("Arial Black", Font.PLAIN, 16);
-	private final int IMG_WIDTH = 100;
+	private final int IMG_WIDTH = 70;
 	private final int IMG_HEIGTH = 18;
 	private Color getRandColor(int fc,int bc)
 	{
@@ -67,7 +67,7 @@ public class AuthImg extends HttpServlet
 		}
 		g.setFont(mFont);
 		String sRand = "";
-		for (int i = 0 ; i < 6 ; i++)
+		for (int i = 0 ; i < 4 ; i++)
 		{
 			String tmp = getRandomChar();
 			sRand += tmp;
